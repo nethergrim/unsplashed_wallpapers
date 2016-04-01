@@ -5,12 +5,15 @@ package com.nethergrim.unsplashed.datasource
  * All rights reserved.
  */
 
-data class Wallpaper(val id: String, val url: String)
+open class Wallpaper() {
+    var id: String? = null
+    var url: String? = null
+}
 
 val unsplashImageUrl: String = "https://images.unsplash.com/"
 
 fun Wallpaper.previewUrl(): String {
-    return unsplashImageUrl + id  + "?w=500"
+    return unsplashImageUrl + id + "?w=500"
 
 }
 

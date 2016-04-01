@@ -1,22 +1,39 @@
 package com.nethergrim.unsplashed.ui.main
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.View
+import android.widget.ProgressBar
+import com.hannesdorfmann.mosby.mvp.MvpActivity
 import org.jetbrains.anko.frameLayout
-import org.jetbrains.anko.textView
+import org.jetbrains.anko.progressBar
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
+
+
+    override fun showLoadingView() {
+        progressBar?.visibility = View.VISIBLE
+    }
+
+
+    override fun createPresenter(): MainViewPresenter {
+        return MainViewPresenter()
+    }
+
+    var progressBar: ProgressBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        frameLayout {
+        progressBar = ProgressBar(this)
+        val layout = frameLayout {
 
-            val text = textView {
-                text = "Hello"
-            }
-            text.gravity = Gravity.CENTER
+
+            progressBar = progressBar {
+                visibility = View.GONE
+            }.lparams { gravity = Gravity.CENTER }
+
         }
+        presenter.startLoadingData()
     }
 }
