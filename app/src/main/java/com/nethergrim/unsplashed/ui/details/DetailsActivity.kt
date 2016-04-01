@@ -1,5 +1,6 @@
 package com.nethergrim.unsplashed.ui.details
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -16,6 +17,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.hannesdorfmann.mosby.mvp.MvpActivity
 import com.nethergrim.unsplashed.utils.hide
 import com.nethergrim.unsplashed.utils.show
+import com.tbruyelle.rxpermissions.RxPermissions
 import org.jetbrains.anko.*
 
 class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsView {
@@ -44,7 +46,17 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
         super.onCreate(savedInstanceState)
         window.setBackgroundDrawableResource(android.R.color.black)
         layout()
-        presenter.loadPhoto()
+
+        RxPermissions.getInstance(this)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe({
+                    val granted = it
+                    if (granted) {
+                        presenter.loadPhoto()
+                    } else {
+                        finish()
+                    }
+                })
     }
 
     inline fun layout() {
