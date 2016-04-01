@@ -21,6 +21,12 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 dependencies {
@@ -38,6 +44,11 @@ dependencies {
     compile 'io.reactivex:rxkotlin:0.55.0'
 
     compile 'com.jaeger.statusbaruitl:library:1.0.0'
+
+    compile 'com.hannesdorfmann.mosby:mvp:2.0.1'
+
+    compile 'com.firebase:firebase-client-android:2.5.2+'
+    compile 'com.soikonomakis:rxfirebase:1.0.0'
 }
 buildscript {
     ext.kotlin_version = '1.0.1-2'
