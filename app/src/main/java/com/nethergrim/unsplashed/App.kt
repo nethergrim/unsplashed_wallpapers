@@ -10,9 +10,17 @@ import com.firebase.client.Firebase
  */
 open class App: Application() {
 
+
+
+    companion object {
+       lateinit var instance: App
+    }
+
+
+
     override fun onCreate() {
         super.onCreate()
-
+        instance = this
         Firebase.setAndroidContext(this)
         Fresco.initialize(this)
     }

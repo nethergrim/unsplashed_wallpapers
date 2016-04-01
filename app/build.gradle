@@ -36,7 +36,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.2.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile 'org.jetbrains.anko:anko-sdk15:0.8.3' // sdk19, sdk21, sdk23 are also available
+    compile 'org.jetbrains.anko:anko-sdk21:0.8.3' // sdk19, sdk21, sdk23 are also available
     compile 'org.jetbrains.anko:anko-support-v4:0.8.3' // In case you need support-v4 bindings
     compile 'org.jetbrains.anko:anko-appcompat-v7:0.8.3' // For appcompat-v7 bindings
 
@@ -48,10 +48,12 @@ dependencies {
 
     compile 'com.hannesdorfmann.mosby:mvp:2.0.1'
 
-    compile 'com.firebase:firebase-client-android:2.5.2+'
+    compile 'com.firebase:firebase-client-android:2.5.2'
     compile 'com.soikonomakis:rxfirebase:1.0.0'
 
-    compile 'com.facebook.fresco:fresco:0.9.0+'
+    compile 'com.facebook.fresco:fresco:0.9.0'
+
+    compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.4.1'
 }
 buildscript {
     ext.kotlin_version = '1.0.1-2'
