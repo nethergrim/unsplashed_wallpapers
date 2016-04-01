@@ -63,21 +63,20 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         recycler?.setHasFixedSize(true)
         recycler?.addOnItemTouchListener(RecyclerItemClickListener(this, object : RecyclerItemClickListener.OnItemClickListener {
             override fun onItemClick(childView: View, position: Int) {
-            }
-
-            override fun onItemLongPress(childView: View, position: Int) {
                 if (adapter == null) {
                     return
                 }
                 val wallpaper = adapter!!.data[position]
                 presenter.openDetailsScreen(wallpaper, this@MainActivity)
             }
+
+            override fun onItemLongPress(childView: View, position: Int) {
+            }
         }))
         layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.main_screen_span_count))
         recycler?.layoutManager = layoutManager
         presenter.startLoadingData()
     }
-
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
@@ -108,12 +107,10 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         errorView?.show()
     }
 
-
     override fun showLoadingView() {
         progressBar?.show()
         errorView?.hide()
     }
-
 
     override fun createPresenter(): MainViewPresenter {
         return MainViewPresenter()
