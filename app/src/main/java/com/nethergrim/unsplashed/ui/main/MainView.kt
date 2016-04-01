@@ -1,6 +1,7 @@
 package com.nethergrim.unsplashed.ui.main
 
 import com.hannesdorfmann.mosby.mvp.MvpView
+import com.nethergrim.unsplashed.datasource.Wallpaper
 
 /**
  * @author Andrey Drobyazko (c2q9450@gmail.com).
@@ -9,5 +10,9 @@ import com.hannesdorfmann.mosby.mvp.MvpView
 interface MainView: MvpView {
 
     fun showLoadingView()
+
+    fun showErrorView()
+
+    fun showData(data: List<Wallpaper>)
 
 }

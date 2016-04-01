@@ -1,6 +1,7 @@
 package com.nethergrim.unsplashed
 
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.firebase.client.DataSnapshot
 import com.nethergrim.unsplashed.datasource.Wallpaper
 import java.util.*
@@ -22,4 +23,12 @@ fun DataSnapshot.toListOfWallpapers(): List<Wallpaper> {
         result.add(wallpaper)
     }
     return result
+}
+
+fun View.hide() {
+    this.visibility = View.GONE
+}
+
+fun View.show() {
+    this.visibility = View.VISIBLE
 }

@@ -15,7 +15,18 @@ class MainViewPresenter: MvpBasePresenter<MainView>() {
         }
         view?.showLoadingView()
 
-        FirebaseProvider.instance.getRandomizedWallpapers()
+        FirebaseProvider.instance
+                .getRandomizedWallpapers()
+                .subscribe({
+                    if (isViewAttached){
+                        view?.showData(it)
+                    }
+                },{
+                    print(it)
+                    if (isViewAttached){
+                        view?.showErrorView()
+                    }
+                })
     }
 
 
