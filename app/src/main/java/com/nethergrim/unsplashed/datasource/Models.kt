@@ -1,4 +1,4 @@
-package com.nethergrim.unsplashed
+package com.nethergrim.unsplashed.datasource
 
 /**
  * @author Andrey Drobyazko (c2q9450@gmail.com).

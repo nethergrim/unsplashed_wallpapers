@@ -1,4 +1,4 @@
-package com.nethergrim.unsplashed
+package com.nethergrim.unsplashed.datasource
 
 import com.firebase.client.Firebase
 import rx.Observable
