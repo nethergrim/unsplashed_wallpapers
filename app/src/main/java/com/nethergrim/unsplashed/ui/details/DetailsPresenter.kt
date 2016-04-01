@@ -5,8 +5,7 @@ import com.hannesdorfmann.mosby.mvp.MvpBasePresenter
 import com.nethergrim.unsplashed.datasource.FirebaseProvider
 import com.nethergrim.unsplashed.datasource.Wallpaper
 import com.nethergrim.unsplashed.datasource.fullSizeUrl
-import com.nethergrim.unsplashed.utils.getBitmapFromUrl
-import com.nethergrim.unsplashed.utils.saveBitmapToDiskCacheAndRecycle
+import com.nethergrim.unsplashed.utils.saveBitmapToCache
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -30,8 +29,7 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
                 .observeOn(Schedulers.io())
                 .map({ FirebaseProvider.instance.getWallpaperById(id) ?: Wallpaper() })
                 .map({ it.fullSizeUrl() })
-                .map({ getBitmapFromUrl(it) })
-                .map({ saveBitmapToDiskCacheAndRecycle(it) })
+                .map({saveBitmapToCache(it)})
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (isViewAttached) {

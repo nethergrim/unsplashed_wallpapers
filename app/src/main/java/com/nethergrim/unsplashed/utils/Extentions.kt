@@ -60,3 +60,8 @@ inline fun saveBitmapToDiskCacheAndRecycle(bitmap: Bitmap): Uri {
     bitmap.recycle()
     return Uri.fromFile(file)
 }
+
+inline fun saveBitmapToCache(url: String): Uri {
+    val context = App.instance
+    return FileUtils.downloadImagesToSdCard(url, context)
+}
