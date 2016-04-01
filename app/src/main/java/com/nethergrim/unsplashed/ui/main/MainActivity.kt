@@ -1,6 +1,7 @@
 package com.nethergrim.unsplashed.ui.main
 
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -51,6 +52,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
     var rootLayout: FrameLayout? = null
     var errorView: TextView? = null
     var recycler: RecyclerView? = null
+    var layoutManager: GridLayoutManager? = null
 
     private fun onRetryClicked() {
         presenter.startLoadingData()
@@ -79,9 +81,25 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         }
         rootLayout?.addView(recycler, FrameLayout.LayoutParams(-1, -1))
         recycler?.setHasFixedSize(true)
-        recycler?.layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.main_screen_span_count))
-
-
+        layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.main_screen_span_count))
+        recycler?.layoutManager = layoutManager
         presenter.startLoadingData()
+    }
+
+    var spanCountDelta: Int = 0
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if (layoutManager == null){
+            return
+        }
+        if (spanCountDelta == 0 && newConfig?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // add one more span count
+            spanCountDelta++
+            layoutManager?.spanCount = layoutManager!!.spanCount + spanCountDelta
+        } else if (spanCountDelta > 0 && newConfig?.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            layoutManager?.spanCount = layoutManager!!.spanCount - spanCountDelta
+            spanCountDelta--
+        }
     }
 }
