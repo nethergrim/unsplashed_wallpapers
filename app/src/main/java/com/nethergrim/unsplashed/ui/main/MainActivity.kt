@@ -24,7 +24,6 @@ import org.jetbrains.anko.textView
 class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
 
     override fun showData(data: List<Wallpaper>) {
-        // TODO add data to the adapter
         progressBar?.hide()
         errorView?.hide()
 
