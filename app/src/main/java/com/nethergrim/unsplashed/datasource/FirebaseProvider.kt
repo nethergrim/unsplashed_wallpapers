@@ -6,6 +6,7 @@ import com.nethergrim.unsplashed.toListOfWallpapers
 import com.soikonomakis.rxfirebase.RxFirebase
 import rx.Observable
 import rx.schedulers.Schedulers
+import java.util.*
 
 /**
  * @author Andrey Drobyazko (c2q9450@gmail.com).
@@ -29,18 +30,19 @@ class FirebaseProvider private constructor() {
     private val firebase: Firebase by lazy { Firebase(firebaseUrl) }
 
     fun getRandomizedWallpapers(): Observable<List<Wallpaper>> {
-
-        RxFirebase.getInstance()
+        val result = RxFirebase.getInstance()
                 .observeValueEvent(firebase)
                 .subscribeOn(Schedulers.io())
+                .first()
                 .map({it.toListOfWallpapers()})
                 .doOnNext {
                     Log.e(TAG, it[0].fullSizeUrl())
                 }
-                .subscribe({})
-
-
-        return Observable.empty()
+                .doOnNext { it -> Collections.shuffle(it) }
+                .doOnNext {
+                    Log.e(TAG, it[0].fullSizeUrl())
+                }
+        return result
     }
 
 
