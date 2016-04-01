@@ -36,6 +36,8 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.1'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'io.reactivex:rxkotlin:0.55.0'
+
+    compile 'com.jaeger.statusbaruitl:library:1.0.0'
 }
 buildscript {
     ext.kotlin_version = '1.0.1-2'
