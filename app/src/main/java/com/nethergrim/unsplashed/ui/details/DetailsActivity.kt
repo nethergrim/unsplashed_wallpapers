@@ -78,7 +78,7 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
         }
         imageView = SubsamplingScaleImageView(this)
         imageView.layoutParams = ViewGroup.LayoutParams(-1, -1)
-        rootView.addView(imageView, 0)
+        rootView.addView(imageView, 1)
     }
 
     override fun showLoadingView() {
@@ -89,7 +89,7 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
     override fun showContent(uri: Uri) {
         imageView.setImage(ImageSource.uri(uri))
 
-        progressBar.hide()
+        progressBar.postDelayed({ progressBar.hide() }, 1500)
         errorText.hide()
     }
 
