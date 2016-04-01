@@ -1,4 +1,4 @@
-package com.nethergrim.unsplashed
+package com.nethergrim.unsplashed.utils
 
 import android.support.v7.app.AppCompatActivity
 import android.view.View
