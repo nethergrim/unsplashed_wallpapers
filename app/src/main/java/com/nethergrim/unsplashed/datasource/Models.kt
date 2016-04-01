@@ -1,5 +1,7 @@
 package com.nethergrim.unsplashed.datasource
 
+import android.net.Uri
+
 /**
  * @author Andrey Drobyazko (c2q9450@gmail.com).
  * All rights reserved.
@@ -17,8 +19,17 @@ fun Wallpaper.previewUrl(): String {
 
 }
 
+fun Wallpaper.previewUri(): Uri {
+    return Uri.parse(unsplashImageUrl + id + "?w=500")
+
+}
+
 fun Wallpaper.fullSizeUrl(): String {
     return unsplashImageUrl + id
+}
+
+fun Wallpaper.fullSizeUri(): Uri {
+    return Uri.parse(unsplashImageUrl + id)
 }
 
 

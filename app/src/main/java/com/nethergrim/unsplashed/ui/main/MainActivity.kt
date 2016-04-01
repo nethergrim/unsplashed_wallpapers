@@ -1,15 +1,20 @@
 package com.nethergrim.unsplashed.ui.main
 
+
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.hannesdorfmann.mosby.mvp.MvpActivity
+import com.nethergrim.unsplashed.R
 import com.nethergrim.unsplashed.datasource.Wallpaper
 import com.nethergrim.unsplashed.hide
 import com.nethergrim.unsplashed.show
+import com.nethergrim.unsplashed.ui.adapters.MainAdapter
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.progressBar
@@ -21,6 +26,9 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         // TODO add data to the adapter
         progressBar?.hide()
         errorView?.hide()
+
+        val adapter = MainAdapter(data)
+        recycler?.adapter = adapter
     }
 
     override fun showErrorView() {
@@ -42,8 +50,9 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
     var progressBar: ProgressBar? = null
     var rootLayout: FrameLayout? = null
     var errorView: TextView? = null
+    var recycler: RecyclerView? = null
 
-    private fun onRetryClicked(){
+    private fun onRetryClicked() {
         presenter.startLoadingData()
     }
 
@@ -51,6 +60,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         super.onCreate(savedInstanceState)
 
         progressBar = ProgressBar(this)
+        recycler = RecyclerView(this@MainActivity)
         rootLayout = frameLayout {
 
             progressBar = progressBar {
@@ -67,6 +77,11 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
             }.lparams { gravity = Gravity.CENTER }
 
         }
+        rootLayout?.addView(recycler, FrameLayout.LayoutParams(-1, -1))
+        recycler?.setHasFixedSize(true)
+        recycler?.layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.main_screen_span_count))
+
+
         presenter.startLoadingData()
     }
 }

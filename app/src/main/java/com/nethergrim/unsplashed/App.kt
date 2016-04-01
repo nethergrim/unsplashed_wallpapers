@@ -1,6 +1,7 @@
 package com.nethergrim.unsplashed
 
 import android.app.Application
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.firebase.client.Firebase
 
 /**
@@ -13,5 +14,6 @@ open class App: Application() {
         super.onCreate()
 
         Firebase.setAndroidContext(this)
+        Fresco.initialize(this)
     }
 }

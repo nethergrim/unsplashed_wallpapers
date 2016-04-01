@@ -7,10 +7,10 @@ import com.nethergrim.unsplashed.datasource.FirebaseProvider
  * @author Andrey Drobyazko (c2q9450@gmail.com).
  * All rights reserved.
  */
-class MainViewPresenter: MvpBasePresenter<MainView>() {
+class MainViewPresenter : MvpBasePresenter<MainView>() {
 
-    fun startLoadingData(){
-        if (!isViewAttached){
+    fun startLoadingData() {
+        if (!isViewAttached) {
             return
         }
         view?.showLoadingView()
@@ -18,18 +18,19 @@ class MainViewPresenter: MvpBasePresenter<MainView>() {
         FirebaseProvider.instance
                 .getRandomizedWallpapers()
                 .subscribe({
-                    if (isViewAttached){
-                        view?.showData(it)
+                    if (isViewAttached) {
+                        if (it.isEmpty()) {
+                            view?.showErrorView()
+                        } else {
+                            view?.showData(it)
+                        }
                     }
-                },{
+                }, {
                     print(it)
-                    if (isViewAttached){
+                    if (isViewAttached) {
                         view?.showErrorView()
                     }
                 })
     }
-
-
-
 
 }
