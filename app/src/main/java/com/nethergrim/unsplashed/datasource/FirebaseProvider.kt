@@ -1,6 +1,5 @@
 package com.nethergrim.unsplashed.datasource
 
-import android.util.Log
 import com.firebase.client.*
 import com.nethergrim.unsplashed.utils.toListOfWallpapers
 import com.soikonomakis.rxfirebase.RxFirebase
@@ -30,27 +29,28 @@ class FirebaseProvider private constructor() {
     private val firebase: Firebase by lazy { Firebase(firebaseUrl) }
 
     private val data: HashMap<String, Wallpaper> = HashMap(9000)
+    private val dataSet: TreeSet<Wallpaper> = TreeSet()
 
-    fun getRandomizedWallpapers(): Observable<List<Wallpaper>> {
-        val result = RxFirebase.getInstance()
-                .observeValueEvent(firebase)
+    fun getWallpapers(): Observable<LinkedList<Wallpaper>> {
+        val full = RxFirebase.getInstance()
+                .observeValueEvent(firebase.orderByChild("reversedRating"))
+                .subscribeOn(Schedulers.newThread())
+                .first()
+
+        val firstPage = RxFirebase.getInstance()
+                .observeValueEvent(firebase.orderByChild("reversedRating").limitToFirst(2))
+                .subscribeOn(Schedulers.newThread())
+                .first()
+
+        val result = Observable.merge(firstPage, full)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .first()
                 .map({ it.toListOfWallpapers() })
+                .doOnNext { dataSet.addAll(it); data }
                 .doOnNext {
-                    Log.e(TAG, "Size: ${it.size}}")
-                    Log.e(TAG, it[0].fullSizeUrl())
-
+                    it.forEach { data.put(it.id ?: "", it) }
                 }
-                .doOnNext { it -> Collections.shuffle(it) }
-                .doOnNext {
-                    Log.e(TAG, it[0].fullSizeUrl())
-                    data.clear()
-                    for (wallpaper in it) {
-                        data.put(wallpaper.id ?: "", wallpaper)
-                    }
-                }
+                .map { LinkedList<Wallpaper>(dataSet) }
         return result
     }
 
@@ -66,7 +66,7 @@ class FirebaseProvider private constructor() {
                     }
 
                     override fun doTransaction(data: MutableData?): Transaction.Result? {
-                        if (data == null){
+                        if (data == null) {
                             return Transaction.abort()
                         }
                         if (data.value == null) {
@@ -74,6 +74,26 @@ class FirebaseProvider private constructor() {
                         } else {
                             var rating = data.getValue(Int::class.java)
                             data.value = ++rating
+                        }
+                        return Transaction.success(data)
+                    }
+                })
+
+        firebase.child(id)
+                .child("reversedRating")
+                .runTransaction(object : Transaction.Handler {
+                    override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
+                    }
+
+                    override fun doTransaction(data: MutableData?): Transaction.Result? {
+                        if (data == null) {
+                            return Transaction.abort()
+                        }
+                        if (data.value == null) {
+                            data.value = -1
+                        } else {
+                            var rating = data.getValue(Int::class.java)
+                            data.value = --rating
                         }
                         return Transaction.success(data)
                     }
@@ -88,7 +108,7 @@ class FirebaseProvider private constructor() {
                     }
 
                     override fun doTransaction(data: MutableData?): Transaction.Result? {
-                        if (data == null){
+                        if (data == null) {
                             return Transaction.abort()
                         }
                         if (data.value == null) {
@@ -96,6 +116,26 @@ class FirebaseProvider private constructor() {
                         } else {
                             var rating = data.getValue(Int::class.java)
                             data.value = --rating
+                        }
+                        return Transaction.success(data)
+                    }
+                })
+
+        firebase.child(id)
+                .child("reversedRating")
+                .runTransaction(object : Transaction.Handler {
+                    override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
+                    }
+
+                    override fun doTransaction(data: MutableData?): Transaction.Result? {
+                        if (data == null) {
+                            return Transaction.abort()
+                        }
+                        if (data.value == null) {
+                            data.value = 1
+                        } else {
+                            var rating = data.getValue(Int::class.java)
+                            data.value = ++rating
                         }
                         return Transaction.success(data)
                     }

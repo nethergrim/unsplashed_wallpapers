@@ -6,14 +6,14 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.nethergrim.unsplashed.datasource.Wallpaper
 import com.nethergrim.unsplashed.datasource.previewUri
 import com.nethergrim.unsplashed.ui.adapters.viewHolders.MainVh
+import java.util.*
 
 /**
  * @author Andrey Drobyazko (c2q9450@gmail.com).
  * All rights reserved.
  */
 
-class MainAdapter(val data: List<Wallpaper>) : RecyclerView.Adapter<MainVh>() {
-
+class MainAdapter(var data: LinkedList<Wallpaper>) : RecyclerView.Adapter<MainVh>() {
 
     override fun onBindViewHolder(p0: MainVh?, p1: Int) {
         val wallpaper = data.get(p1)
@@ -31,4 +31,7 @@ class MainAdapter(val data: List<Wallpaper>) : RecyclerView.Adapter<MainVh>() {
         return data.size
     }
 
+    override fun getItemId(position: Int): Long {
+        return data[position].id?.hashCode()?.toLong() ?: 0
+    }
 }

@@ -26,6 +26,7 @@ import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.progressBar
 import org.jetbrains.anko.textView
+import java.util.*
 
 class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
 
@@ -89,6 +90,18 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
                 .size(dp2px(2).toInt())
                 .build())
         presenter.startLoadingData()
+        adapter = MainAdapter(LinkedList())
+        recycler?.adapter = adapter
+        rootLayout?.fitsSystemWindows = false
+        StatusBarUtil.setTransparent(this)
+    }
+
+
+    override fun setData(data: LinkedList<Wallpaper>) {
+        adapter?.data = data
+        adapter?.notifyDataSetChanged()
+        progressBar?.postDelayed({ progressBar?.hide() }, 2000)
+        errorView?.hide()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -104,15 +117,6 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
             layoutManager?.spanCount = layoutManager!!.spanCount - spanCountDelta
             spanCountDelta--
         }
-    }
-
-    override fun showData(data: List<Wallpaper>) {
-        adapter = MainAdapter(data)
-        recycler?.adapter = adapter
-        progressBar?.postDelayed({ progressBar?.hide() }, 2000)
-        errorView?.hide()
-        StatusBarUtil.setTransparent(this)
-        rootLayout?.fitsSystemWindows = false
     }
 
     override fun showErrorView() {

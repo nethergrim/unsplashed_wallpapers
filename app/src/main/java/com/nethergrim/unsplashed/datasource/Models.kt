@@ -7,10 +7,36 @@ import android.net.Uri
  * All rights reserved.
  */
 
-open class Wallpaper() {
+open class Wallpaper(): Comparable<Wallpaper> {
+
+    override fun compareTo(other: Wallpaper): Int {
+        return rating.compareTo(other.rating) * -1
+    }
+
     var id: String? = null
     var url: String? = null
-    var rating: Int? = null
+    var rating: Int = 0
+    var reversedRating: Int = 0
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as Wallpaper
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id?.hashCode() ?: 0
+    }
+
+    override fun toString(): String {
+        return "Wallpaper(id=$id, url=$url, rating=$rating)"
+    }
+
 }
 
 val unsplashImageUrl: String = "https://images.unsplash.com/"

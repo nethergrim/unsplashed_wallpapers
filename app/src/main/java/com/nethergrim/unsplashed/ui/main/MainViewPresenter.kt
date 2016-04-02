@@ -20,15 +20,11 @@ class MainViewPresenter : MvpBasePresenter<MainView>() {
         view?.showLoadingView()
 
         FirebaseProvider.instance
-                .getRandomizedWallpapers()
+                .getWallpapers()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (isViewAttached) {
-                        if (it.isEmpty()) {
-                            view?.showErrorView()
-                        } else {
-                            view?.showData(it)
-                        }
+                        view?.setData(it)
                     }
                 }, {
                     print(it)
