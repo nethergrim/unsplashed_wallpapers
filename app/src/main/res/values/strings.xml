@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Unsplahed</string>
+    <string name="app_name">Unsplashed</string>
     <string name="title_activity_details">DetailsActivity</string>
 
     <string name="hello_world">Hello world!</string>
