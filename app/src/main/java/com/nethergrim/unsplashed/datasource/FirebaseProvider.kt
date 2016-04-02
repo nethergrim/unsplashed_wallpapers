@@ -29,34 +29,27 @@ class FirebaseProvider private constructor() {
     private val firebase: Firebase by lazy { Firebase(firebaseUrl) }
 
     private val data: HashMap<String, Wallpaper> = HashMap(9000)
-    private val dataSet: TreeSet<Wallpaper> = TreeSet()
+    private val dataSet: Set<Wallpaper> = Collections.synchronizedSet<Wallpaper>(HashSet<Wallpaper>())
     private val scheduler = Schedulers.newThread()
 
     fun getWallpapers(): Observable<LinkedList<Wallpaper>> {
 
 
-        val firstPage = RxFirebase.getInstance()
-                .observeValueEvent(firebase.orderByChild("reversedRating").limitToFirst(30))
-                .subscribeOn(scheduler)
-                .observeOn(scheduler)
-                .first()
-
         val full = RxFirebase.getInstance()
                 .observeValueEvent(firebase.orderByChild("reversedRating"))
                 .subscribeOn(scheduler)
                 .observeOn(scheduler)
-                .first()
+
 
         val result = full
                 .subscribeOn(scheduler)
                 .observeOn(scheduler)
-                .startWith(firstPage)
                 .map({ it.toListOfWallpapers() })
-                .doOnNext { dataSet.addAll(it) }
                 .doOnNext {
-                    it.forEach { data.put(it.id ?: "", it) }
+                    it.forEach { data.put(it.id ?: "", it); dataSet.plus(it) }
                 }
-                .map { LinkedList<Wallpaper>(dataSet) }
+                .map { LinkedList<Wallpaper>(it) }
+                .doOnNext { Collections.sort(it) }
         return result
     }
 

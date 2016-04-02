@@ -25,6 +25,7 @@ class MainViewPresenter : MvpBasePresenter<MainView>() {
         FirebaseProvider.instance
                 .getWallpapers()
                 .observeOn(AndroidSchedulers.mainThread())
+                .takeUntil { !isViewAttached }
                 .subscribe({
                     if (isViewAttached) {
                         view?.setData(it)

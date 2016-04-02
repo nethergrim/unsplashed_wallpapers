@@ -10,7 +10,7 @@ import android.net.Uri
 open class Wallpaper(): Comparable<Wallpaper> {
 
     override fun compareTo(other: Wallpaper): Int {
-        return rating.compareTo(other.rating) * -1
+        return reversedRating.compareTo(other.reversedRating)
     }
 
     var id: String? = null

@@ -2,6 +2,7 @@ package com.nethergrim.unsplashed
 
 import android.app.Application
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.firebase.client.Config
 import com.firebase.client.Firebase
 
 /**
@@ -10,18 +11,17 @@ import com.firebase.client.Firebase
  */
 open class App: Application() {
 
-
-
     companion object {
        lateinit var instance: App
     }
-
-
 
     override fun onCreate() {
         super.onCreate()
         instance = this
         Firebase.setAndroidContext(this)
+        val config = Config()
+        config.isPersistenceEnabled = true
+        Firebase.setDefaultConfig(config)
         Fresco.initialize(this)
     }
 }
