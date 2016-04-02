@@ -54,4 +54,12 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
     fun setToWallpaper(){
         // TODO
     }
+
+    fun thumbsUp(){
+
+    }
+
+    fun thumbsDown(){
+
+    }
 }

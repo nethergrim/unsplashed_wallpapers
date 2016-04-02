@@ -9,11 +9,15 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.hannesdorfmann.mosby.mvp.MvpActivity
 import com.jaeger.library.StatusBarUtil
+import com.nethergrim.unsplashed.R
 import com.nethergrim.unsplashed.utils.dp2px
 import com.nethergrim.unsplashed.utils.hide
 import com.nethergrim.unsplashed.utils.show
@@ -27,6 +31,7 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
     lateinit var progressBar: ProgressBar
     lateinit var errorText: TextView
     lateinit var imageView: SubsamplingScaleImageView
+    lateinit var bottomLayout: LinearLayout
 
     companion object {
         val EXTRA_WALLPAPER_ID = "id"
@@ -76,30 +81,45 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
                     onRetryClicked()
                 }
             }.lparams { gravity = Gravity.CENTER }
+
+            bottomLayout = linearLayout {
+                weightSum = 5.0f
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER
+
+                imageButton {
+                    imageResource = R.drawable.ic_share_black_24px
+                    onClick { presenter.share() }
+                }.lparams { weight = 1.0f; width = 0; height = -1 }
+
+                imageButton {
+                    imageResource = R.drawable.ic_file_download_black_24px
+                    onClick { presenter.download() }
+                }.lparams { weight = 1.0f; width = 0; height = -1 }
+
+                imageButton {
+                    imageResource = R.drawable.ic_wallpaper_black_24px
+                    onClick { presenter.setToWallpaper() }
+                }.lparams { weight = 1.0f; width = 0; height = -1 }
+
+                imageButton {
+                    imageResource = R.drawable.ic_thumb_down_black_24px
+                    onClick { presenter.thumbsDown() }
+                }.lparams { weight = 1.0f; width = 0; height = -1 }
+
+                imageButton {
+                    imageResource = R.drawable.ic_thumb_up_black_24px
+                    onClick { presenter.thumbsUp() }
+                }.lparams { weight = 1.0f; width = 0; height = -1 }
+
+            }.lparams { width = -1; height = dp2px(48).toInt(); gravity = Gravity.BOTTOM }
         }
         imageView = SubsamplingScaleImageView(this)
         imageView.layoutParams = ViewGroup.LayoutParams(-1, -1)
         rootView.addView(imageView, 1)
 
-
-        val bottomLayout = LinearLayout(this)
-        bottomLayout.orientation = LinearLayout.HORIZONTAL
-        bottomLayout.weightSum = 5f
-
-        val bottomLayoutParams = FrameLayout.LayoutParams(-1, dp2px(48).toInt())
-        bottomLayoutParams.gravity = Gravity.BOTTOM
-        rootView.addView(bottomLayout, bottomLayoutParams)
-
-        val btnShare = ImageButton(this)
-        val shareParams = LinearLayout.LayoutParams(0, -1)
-        shareParams.weight = 1f
-
-
     }
 
-    fun fabClicked() {
-
-    }
 
     override fun showLoadingView() {
         progressBar.show()
