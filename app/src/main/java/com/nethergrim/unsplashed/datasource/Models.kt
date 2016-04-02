@@ -10,6 +10,7 @@ import android.net.Uri
 open class Wallpaper() {
     var id: String? = null
     var url: String? = null
+    var rating: Int? = null
 }
 
 val unsplashImageUrl: String = "https://images.unsplash.com/"

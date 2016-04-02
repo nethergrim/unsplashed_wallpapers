@@ -1,7 +1,7 @@
 package com.nethergrim.unsplashed.datasource
 
 import android.util.Log
-import com.firebase.client.Firebase
+import com.firebase.client.*
 import com.nethergrim.unsplashed.utils.toListOfWallpapers
 import com.soikonomakis.rxfirebase.RxFirebase
 import rx.Observable
@@ -33,7 +33,7 @@ class FirebaseProvider private constructor() {
 
     fun getRandomizedWallpapers(): Observable<List<Wallpaper>> {
         val result = RxFirebase.getInstance()
-                .observeValueEvent(firebase)
+                .observeValueEvent(firebase.limitToFirst(1))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .first()
@@ -56,6 +56,50 @@ class FirebaseProvider private constructor() {
 
     fun getWallpaperById(id: String): Wallpaper? {
         return data.get(id)
+    }
+
+    fun incrementRating(id: String) {
+        firebase.child(id)
+                .child("rating")
+                .runTransaction(object : Transaction.Handler {
+                    override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
+                    }
+
+                    override fun doTransaction(data: MutableData?): Transaction.Result? {
+                        if (data == null){
+                            return Transaction.abort()
+                        }
+                        if (data.value == null) {
+                            data.value = 1
+                        } else {
+                            var rating = data.getValue(Int::class.java)
+                            data.value = ++rating
+                        }
+                        return Transaction.success(data)
+                    }
+                })
+    }
+
+    fun decrementRating(id: String) {
+        firebase.child(id)
+                .child("rating")
+                .runTransaction(object : Transaction.Handler {
+                    override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
+                    }
+
+                    override fun doTransaction(data: MutableData?): Transaction.Result? {
+                        if (data == null){
+                            return Transaction.abort()
+                        }
+                        if (data.value == null) {
+                            data.value = -1
+                        } else {
+                            var rating = data.getValue(Int::class.java)
+                            data.value = --rating
+                        }
+                        return Transaction.success(data)
+                    }
+                })
     }
 
 

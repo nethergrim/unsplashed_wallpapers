@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream
 class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
 
     val TAG = "DetailsPresenter"
+    var updatedRating = false
 
     inline fun loadPhoto() {
         if (isViewAttached) {
@@ -142,10 +143,22 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
     }
 
     fun thumbsUp() {
-
+        if (updatedRating)
+            return
+        if (isViewAttached) {
+            updatedRating = true
+            view?.showMessage("Thank you!")
+            FirebaseProvider.instance.incrementRating(id)
+        }
     }
 
     fun thumbsDown() {
-
+        if (updatedRating)
+            return
+        if (isViewAttached) {
+            updatedRating = true
+            view?.showMessage("Thank you!")
+            FirebaseProvider.instance.decrementRating(id)
+        }
     }
 }
