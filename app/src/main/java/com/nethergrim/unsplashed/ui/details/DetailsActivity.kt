@@ -104,7 +104,15 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
 
                 imageButton {
                     imageResource = R.drawable.ic_wallpaper_black_24px
-                    onClick { presenter.setToWallpaper() }
+                    onClick {
+                        RxPermissions.getInstance(this@DetailsActivity)
+                                .request(Manifest.permission.SET_WALLPAPER)
+                                .subscribe({
+                                    if (it) {
+                                        presenter.setToWallpaper()
+                                    }
+                                })
+                    }
                 }.lparams { weight = 1.0f; width = 0; height = -1 }
 
                 imageButton {

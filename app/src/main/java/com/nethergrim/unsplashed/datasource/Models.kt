@@ -13,23 +13,25 @@ open class Wallpaper() {
 }
 
 val unsplashImageUrl: String = "https://images.unsplash.com/"
+val previewQualifier = "?w=500"
+val fullQualifier = "?w=3000"
 
 fun Wallpaper.previewUrl(): String {
-    return unsplashImageUrl + id + "?w=500"
+    return unsplashImageUrl + id + previewQualifier
 
 }
 
 fun Wallpaper.previewUri(): Uri {
-    return Uri.parse(unsplashImageUrl + id + "?w=500")
+    return Uri.parse(unsplashImageUrl + id + previewQualifier)
 
 }
 
 fun Wallpaper.fullSizeUrl(): String {
-    return unsplashImageUrl + id
+    return unsplashImageUrl + id + fullQualifier
 }
 
 fun Wallpaper.fullSizeUri(): Uri {
-    return Uri.parse(unsplashImageUrl + id)
+    return Uri.parse(unsplashImageUrl + id + fullQualifier)
 }
 
 
