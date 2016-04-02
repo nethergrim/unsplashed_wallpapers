@@ -14,7 +14,6 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.hannesdorfmann.mosby.mvp.MvpActivity
 import com.jaeger.library.StatusBarUtil
-import com.nethergrim.unsplashed.R
 import com.nethergrim.unsplashed.utils.dp2px
 import com.nethergrim.unsplashed.utils.hide
 import com.nethergrim.unsplashed.utils.show
@@ -84,7 +83,6 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
 
 
         val bottomLayout = LinearLayout(this)
-        bottomLayout.setBackgroundColor(resources.getColor(R.color.colorAccent))
         bottomLayout.orientation = LinearLayout.HORIZONTAL
         bottomLayout.weightSum = 5f
 
