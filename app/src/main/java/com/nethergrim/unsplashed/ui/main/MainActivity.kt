@@ -94,8 +94,9 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         presenter.startLoadingData()
         adapter = MainAdapter(LinkedList())
         recycler?.adapter = adapter
-        rootLayout?.fitsSystemWindows = false
+
         StatusBarUtil.setTransparent(this)
+        rootLayout?.fitsSystemWindows = false
     }
 
 
