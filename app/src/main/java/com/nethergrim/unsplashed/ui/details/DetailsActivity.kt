@@ -94,7 +94,7 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
 
                 imageButton {
                     imageResource = R.drawable.ic_share_black_24px
-                    onClick { presenter.share() }
+                    onClick { presenter.share(this@imageButton.context) }
                 }.lparams { weight = 1.0f; width = 0; height = -1 }
 
                 imageButton {
@@ -147,6 +147,7 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
         progressBar.hide()
         errorText.show()
         bottomLayout.hide()
+        imageView.recycle()
     }
 
     override fun showMessage(message: String) {

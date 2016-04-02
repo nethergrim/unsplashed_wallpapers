@@ -1,5 +1,7 @@
 package com.nethergrim.unsplashed.ui.details
 
+import android.content.Context
+import android.content.Intent
 import android.os.Environment
 import android.util.Log
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter
@@ -45,8 +47,32 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
                 });
     }
 
-    fun share() {
-        // TODO
+    fun share(context : Context) {
+        if (isViewAttached){
+            view?.showBlockingProgress()
+        }
+        Observable.just(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map({ FirebaseProvider.instance.getWallpaperById(id) ?: Wallpaper() })
+                .map { saveBitmapToDownloads(it.fullSizeUrl(), it.id ?: System.currentTimeMillis().toString()) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (isViewAttached) {
+                        view?.hideBlockingProgress()
+                        val shareIntent = Intent();
+                        shareIntent.setAction(Intent.ACTION_SEND);
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, it);
+                        shareIntent.setType("image/jpeg");
+                        context.startActivity(Intent.createChooser(shareIntent, "Share to:"))
+                    }
+                }, {
+                    Log.e(TAG, "error", it)
+                    if (isViewAttached) {
+                        view?.hideBlockingProgress()
+                        view?.showErrorView()
+                    }
+                })
     }
 
     fun download() {
