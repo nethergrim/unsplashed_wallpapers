@@ -54,6 +54,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
                 visibility = View.GONE
             }.lparams { gravity = Gravity.CENTER }
 
+
             errorView = textView {
                 text = "Network error happened.\nTap to retry"
                 gravity = Gravity.CENTER
@@ -64,7 +65,8 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
             }.lparams { gravity = Gravity.CENTER }
 
         }
-        rootLayout?.addView(recycler, FrameLayout.LayoutParams(-1, -1))
+        recycler?.layoutParams = FrameLayout.LayoutParams(-1,-1)
+        rootLayout?.addView(recycler, 1)
         recycler?.setHasFixedSize(true)
         recycler?.addOnItemTouchListener(RecyclerItemClickListener(this, object : RecyclerItemClickListener.OnItemClickListener {
             override fun onItemClick(childView: View, position: Int) {

@@ -1,6 +1,7 @@
 package com.nethergrim.unsplashed.ui.main
 
 import android.content.Context
+import android.util.Log
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter
 import com.nethergrim.unsplashed.datasource.FirebaseProvider
 import com.nethergrim.unsplashed.datasource.Wallpaper
@@ -12,6 +13,8 @@ import rx.android.schedulers.AndroidSchedulers
  * All rights reserved.
  */
 class MainViewPresenter : MvpBasePresenter<MainView>() {
+
+    val TAG = "MainViewPresenter"
 
     fun startLoadingData() {
         if (!isViewAttached) {
@@ -27,7 +30,7 @@ class MainViewPresenter : MvpBasePresenter<MainView>() {
                         view?.setData(it)
                     }
                 }, {
-                    print(it)
+                    Log.e(TAG, "Error", it)
                     if (isViewAttached) {
                         view?.showErrorView()
                     }
