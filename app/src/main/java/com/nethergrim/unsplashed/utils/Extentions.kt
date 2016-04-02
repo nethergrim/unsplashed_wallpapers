@@ -5,6 +5,7 @@ package com.nethergrim.unsplashed.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Environment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.firebase.client.DataSnapshot
@@ -63,5 +64,10 @@ inline fun saveBitmapToDiskCacheAndRecycle(bitmap: Bitmap): Uri {
 
 inline fun saveBitmapToCache(url: String): Uri {
     val context = App.instance
-    return FileUtils.downloadImagesToSdCard(url, context)
+    return FileUtils.downloadImagesToCache(url, context)
+}
+
+inline fun saveBitmapToDownloads(url: String, name: String): Uri {
+    val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), name + ".jpg")
+    return FileUtils.downloadImage(url, file)
 }

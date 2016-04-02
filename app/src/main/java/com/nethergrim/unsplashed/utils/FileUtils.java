@@ -16,13 +16,12 @@ import java.net.URLConnection;
  * @author Andrey Drobyazko (c2q9450@gmail.com).
  *         All rights reserved.
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class FileUtils {
 
 
-    public static Uri downloadImagesToSdCard(String downloadUrl, Context context) {
+    public static Uri downloadImagesToCache(String downloadUrl, Context context) {
         try {
-            URL url = new URL(downloadUrl);
-
             File directory = context.getCacheDir();
 
             File myDir = new File(directory, "images");
@@ -38,6 +37,17 @@ public class FileUtils {
             if (file.exists()) {
                 file.delete();
             }
+
+            return downloadImage(downloadUrl, file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Uri downloadImage(String downloadUrl, File file) {
+        try {
+            URL url = new URL(downloadUrl);
 
 
                 /* Open a connection */

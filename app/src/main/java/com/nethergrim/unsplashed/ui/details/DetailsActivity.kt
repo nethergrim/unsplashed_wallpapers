@@ -1,6 +1,7 @@
 package com.nethergrim.unsplashed.ui.details
 
 import android.Manifest
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -24,6 +25,7 @@ import com.nethergrim.unsplashed.utils.show
 import com.tbruyelle.rxpermissions.RxPermissions
 import org.jetbrains.anko.*
 
+@Suppress("NOTHING_TO_INLINE")
 class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsView {
 
 
@@ -32,6 +34,8 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
     lateinit var errorText: TextView
     lateinit var imageView: SubsamplingScaleImageView
     lateinit var bottomLayout: LinearLayout
+    lateinit var dialog: ProgressDialog
+
 
     companion object {
         val EXTRA_WALLPAPER_ID = "id"
@@ -86,6 +90,7 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
                 weightSum = 5.0f
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
+                visibility = View.GONE
 
                 imageButton {
                     imageResource = R.drawable.ic_share_black_24px
@@ -117,18 +122,18 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
         imageView = SubsamplingScaleImageView(this)
         imageView.layoutParams = ViewGroup.LayoutParams(-1, -1)
         rootView.addView(imageView, 1)
-
     }
 
 
     override fun showLoadingView() {
         progressBar.show()
         errorText.hide()
+        bottomLayout.hide()
     }
 
     override fun showContent(uri: Uri) {
         imageView.setImage(ImageSource.uri(uri))
-
+        bottomLayout.show()
         progressBar.postDelayed({ progressBar.hide() }, 1500)
         errorText.hide()
     }
@@ -141,6 +146,22 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
     override fun showErrorView() {
         progressBar.hide()
         errorText.show()
+        bottomLayout.hide()
+    }
+
+    override fun showMessage(message: String) {
+        longToast(message)
+    }
+
+    override fun showBlockingProgress() {
+        dialog = indeterminateProgressDialog(R.string.please_wait)
+    }
+
+    override fun hideBlockingProgress() {
+        @Suppress("SENSELESS_COMPARISON")
+        if (dialog != null) {
+            dialog.dismiss()
+        }
     }
 
 }

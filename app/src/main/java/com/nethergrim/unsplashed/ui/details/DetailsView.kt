@@ -14,4 +14,11 @@ interface DetailsView: MvpView {
     fun showContent(uri: Uri)
 
     fun showErrorView()
+
+    fun showMessage(message: String)
+
+    fun showBlockingProgress()
+
+    fun hideBlockingProgress()
+
 }
