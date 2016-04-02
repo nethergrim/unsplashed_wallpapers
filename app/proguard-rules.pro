@@ -15,7 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
+-keep class com.nethergrim.unsplashed.datasource.Wallpaper { *; }
 -dontwarn kotlin.**
 
 # This is for RxJava. We never use this on android
