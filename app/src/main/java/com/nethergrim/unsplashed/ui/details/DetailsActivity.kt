@@ -13,6 +13,7 @@ import android.widget.*
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.hannesdorfmann.mosby.mvp.MvpActivity
+import com.jaeger.library.StatusBarUtil
 import com.nethergrim.unsplashed.R
 import com.nethergrim.unsplashed.utils.dp2px
 import com.nethergrim.unsplashed.utils.hide
@@ -57,6 +58,7 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
                         finish()
                     }
                 })
+        StatusBarUtil.setTransparent(this)
     }
 
     inline fun layout() {
