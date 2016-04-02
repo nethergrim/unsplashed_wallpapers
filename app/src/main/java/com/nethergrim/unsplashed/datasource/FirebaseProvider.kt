@@ -33,7 +33,7 @@ class FirebaseProvider private constructor() {
 
     fun getRandomizedWallpapers(): Observable<List<Wallpaper>> {
         val result = RxFirebase.getInstance()
-                .observeValueEvent(firebase.limitToFirst(1))
+                .observeValueEvent(firebase)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .first()
