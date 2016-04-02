@@ -13,6 +13,8 @@ import com.nethergrim.unsplashed.App
 import com.nethergrim.unsplashed.datasource.Wallpaper
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
+import java.net.URL
 import java.util.*
 
 /**
@@ -48,6 +50,10 @@ inline fun getBitmapFromUrl(url: String): Bitmap {
     connection.connect()
     val bitmap = BitmapFactory.decodeStream(connection.inputStream)
     return bitmap
+}
+
+inline fun getInputStreamFromUrl(url: String): InputStream {
+    return URL(url).openStream()
 }
 
 inline fun saveBitmapToDiskCacheAndRecycle(bitmap: Bitmap): Uri {
