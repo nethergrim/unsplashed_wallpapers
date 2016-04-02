@@ -30,23 +30,29 @@ class FirebaseProvider private constructor() {
 
     private val data: HashMap<String, Wallpaper> = HashMap(9000)
     private val dataSet: TreeSet<Wallpaper> = TreeSet()
+    private val scheduler = Schedulers.newThread()
 
     fun getWallpapers(): Observable<LinkedList<Wallpaper>> {
-        val full = RxFirebase.getInstance()
-                .observeValueEvent(firebase.orderByChild("reversedRating"))
-                .subscribeOn(Schedulers.newThread())
-                .first()
+
 
         val firstPage = RxFirebase.getInstance()
-                .observeValueEvent(firebase.orderByChild("reversedRating").limitToFirst(2))
-                .subscribeOn(Schedulers.newThread())
+                .observeValueEvent(firebase.orderByChild("reversedRating").limitToFirst(30))
+                .subscribeOn(scheduler)
+                .observeOn(scheduler)
                 .first()
 
-        val result = Observable.merge(firstPage, full)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+        val full = RxFirebase.getInstance()
+                .observeValueEvent(firebase.orderByChild("reversedRating"))
+                .subscribeOn(scheduler)
+                .observeOn(scheduler)
+                .first()
+
+        val result = full
+                .subscribeOn(scheduler)
+                .observeOn(scheduler)
+                .startWith(firstPage)
                 .map({ it.toListOfWallpapers() })
-                .doOnNext { dataSet.addAll(it); data }
+                .doOnNext { dataSet.addAll(it) }
                 .doOnNext {
                     it.forEach { data.put(it.id ?: "", it) }
                 }
