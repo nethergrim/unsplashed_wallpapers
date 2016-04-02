@@ -2,6 +2,7 @@ package com.nethergrim.unsplashed.ui.main
 
 
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,8 +17,11 @@ import com.nethergrim.unsplashed.R
 import com.nethergrim.unsplashed.datasource.Wallpaper
 import com.nethergrim.unsplashed.ui.adapters.MainAdapter
 import com.nethergrim.unsplashed.utils.RecyclerItemClickListener
+import com.nethergrim.unsplashed.utils.dp2px
 import com.nethergrim.unsplashed.utils.hide
 import com.nethergrim.unsplashed.utils.show
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
+import com.yqritc.recyclerviewflexibledivider.VerticalDividerItemDecoration
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.progressBar
@@ -75,6 +79,15 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         }))
         layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.main_screen_span_count))
         recycler?.layoutManager = layoutManager
+        recycler?.addItemDecoration(HorizontalDividerItemDecoration.Builder(this)
+                .color(Color.BLACK)
+                .size(dp2px(2).toInt())
+                .build())
+
+        recycler?.addItemDecoration(VerticalDividerItemDecoration.Builder(this)
+                .color(Color.BLACK)
+                .size(dp2px(2).toInt())
+                .build())
         presenter.startLoadingData()
     }
 

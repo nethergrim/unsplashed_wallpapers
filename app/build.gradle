@@ -59,6 +59,7 @@ dependencies {
 
     compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.4.1'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
+    compile 'com.yqritc:recyclerview-flexibledivider:1.2.9'
 }
 buildscript {
     ext.kotlin_version = '1.0.1-2'
