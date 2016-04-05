@@ -1,12 +1,14 @@
 package com.nethergrim.unsplashed.datasource
 
 import android.net.Uri
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 /**
  * @author Andrey Drobyazko (c2q9450@gmail.com).
  * All rights reserved.
  */
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 open class Wallpaper(): Comparable<Wallpaper> {
 
     override fun compareTo(other: Wallpaper): Int {
