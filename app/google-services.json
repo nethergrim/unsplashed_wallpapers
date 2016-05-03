@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "976171341270",
+    "project_id": "unsplashed-57036"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976171341270:android:e2402ea1f9393c9a",
+        "android_client_info": {
+          "package_name": "com.nethergrim.unsplashed"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqL7HTT2rWIR-cOtKkSuQYxlF9gz2d5zM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

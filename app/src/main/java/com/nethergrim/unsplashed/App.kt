@@ -6,6 +6,10 @@ import com.crashlytics.android.answers.Answers
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.firebase.client.Config
 import com.firebase.client.Firebase
+import com.google.android.gms.gcm.GcmNetworkManager
+import com.google.android.gms.gcm.OneoffTask
+import com.google.android.gms.gcm.PeriodicTask
+import com.nethergrim.unsplashed.datasource.SyncService
 import io.fabric.sdk.android.Fabric
 
 /**
@@ -27,5 +31,19 @@ open class App: Application() {
         config.isPersistenceEnabled = true
         Firebase.setDefaultConfig(config)
         Fresco.initialize(this)
+
+        val task = PeriodicTask.Builder()
+                .setRequiredNetwork(OneoffTask.NETWORK_STATE_ANY)
+                .setPersisted(true)
+                .setRequiresCharging(true)
+                .setService(SyncService::class.java)
+                .setTag("sync")
+                .setPeriod(60 * 12)
+                .setFlex(60 * 6)
+            .build()
+
+
+
+        GcmNetworkManager.getInstance(this).schedule(task)
     }
 }

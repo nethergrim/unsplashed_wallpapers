@@ -34,13 +34,8 @@ class FirebaseProvider private constructor() {
 
     fun getWallpapers(): Observable<LinkedList<Wallpaper>> {
 
-
         val full = RxFirebase.getInstance()
                 .observeValueEvent(firebase.orderByChild("reversedRating"))
-                .subscribeOn(scheduler)
-                .observeOn(scheduler)
-
-
         val result = full
                 .subscribeOn(scheduler)
                 .observeOn(scheduler)
