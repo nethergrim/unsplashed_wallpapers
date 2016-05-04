@@ -61,7 +61,7 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map({ FirebaseProvider.instance.getWallpaperById(id) ?: Wallpaper() })
-                .map({ saveBitmapToCache(it.fullSizeUrl(), it.id!!) })
+                .map({ saveBitmapToDownloads(it.fullSizeUrl(), it.id!!) })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (isViewAttached) {
