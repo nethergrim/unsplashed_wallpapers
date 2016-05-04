@@ -20,7 +20,7 @@ import java.net.URLConnection;
 public class FileUtils {
 
 
-    public static Uri downloadImagesToCache(String downloadUrl, Context context) {
+    public static Uri downloadImagesToCache(String downloadUrl, Context context, String name) {
         try {
             File directory = context.getCacheDir();
 
@@ -32,10 +32,10 @@ public class FileUtils {
             }
 
                 /* checks the file and if it already exist delete */
-            String fname = System.currentTimeMillis() + ".jpg";
+            String fname = name + ".jpg";
             File file = new File(myDir, fname);
             if (file.exists()) {
-                file.delete();
+                return Uri.fromFile(file);
             }
 
             return downloadImage(downloadUrl, file);
@@ -48,11 +48,14 @@ public class FileUtils {
     public static Uri downloadImage(String downloadUrl, File file) {
         try {
             URL url = new URL(downloadUrl);
+            if (file.exists() && file.isFile()) {
+                return Uri.fromFile(file);
+            }
 
 
                 /* Open a connection */
             URLConnection ucon = url.openConnection();
-            InputStream inputStream = null;
+            InputStream inputStream;
             HttpURLConnection httpConn = (HttpURLConnection) ucon;
             httpConn.setRequestMethod("GET");
             httpConn.connect();

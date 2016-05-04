@@ -36,8 +36,7 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map({ FirebaseProvider.instance.getWallpaperById(id) ?: Wallpaper() })
-                .map({ it.fullSizeUrl() })
-                .map({ saveBitmapToCache(it) })
+                .map({ saveBitmapToCache(it.fullSizeUrl(), it.id!!) })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (isViewAttached) {
@@ -54,12 +53,15 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
     fun share(context: Context) {
         if (isViewAttached) {
             view?.showBlockingProgress()
+
+
         }
+
         Observable.just(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map({ FirebaseProvider.instance.getWallpaperById(id) ?: Wallpaper() })
-                .map { saveBitmapToDownloads(it.fullSizeUrl(), it.id ?: System.currentTimeMillis().toString()) }
+                .map({ saveBitmapToCache(it.fullSizeUrl(), it.id!!) })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (isViewAttached) {

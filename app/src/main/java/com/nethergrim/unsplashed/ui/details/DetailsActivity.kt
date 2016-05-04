@@ -56,16 +56,9 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
         window.setBackgroundDrawableResource(android.R.color.black)
         layout()
 
-        RxPermissions.getInstance(this)
-                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe({
-                    val granted = it
-                    if (granted) {
-                        presenter.loadPhoto()
-                    } else {
-                        finish()
-                    }
-                })
+
+        presenter.loadPhoto()
+
         StatusBarUtil.setTransparent(this)
     }
 
@@ -99,7 +92,21 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
 
                 imageButton {
                     imageResource = R.drawable.ic_file_download_black_24px
-                    onClick { presenter.download() }
+                    onClick {
+
+                        RxPermissions.getInstance(this@DetailsActivity)
+                                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                .subscribe({
+                                    val granted = it
+                                    if (granted) {
+                                        presenter.download()
+                                    } else {
+                                        toast("Impossible to download image without a permission. Please give storage access permission.")
+                                    }
+                                })
+
+
+                    }
                 }.lparams { weight = 1.0f; width = 0; height = -1 }
 
                 imageButton {

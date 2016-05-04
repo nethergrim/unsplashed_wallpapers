@@ -25,7 +25,10 @@ open class App: Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        Fabric.with(this, Crashlytics(), Answers())
+        if (!BuildConfig.DEBUG){
+            Fabric.with(this, Crashlytics(), Answers())
+        }
+
         Firebase.setAndroidContext(this)
         val config = Config()
         config.isPersistenceEnabled = true

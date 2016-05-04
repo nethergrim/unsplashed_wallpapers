@@ -68,9 +68,9 @@ inline fun saveBitmapToDiskCacheAndRecycle(bitmap: Bitmap): Uri {
     return Uri.fromFile(file)
 }
 
-inline fun saveBitmapToCache(url: String): Uri {
+inline fun saveBitmapToCache(url: String, name: String = System.currentTimeMillis().toString()): Uri {
     val context = App.instance
-    return FileUtils.downloadImagesToCache(url, context)
+    return FileUtils.downloadImagesToCache(url, context, name)
 }
 
 inline fun saveBitmapToDownloads(url: String, name: String): Uri {
