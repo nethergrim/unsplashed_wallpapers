@@ -61,7 +61,7 @@ class FirebaseProvider private constructor() {
                             data.priority = 0
                             priority = 0
                         }
-                        if (priority is Long){
+                        if (priority is Double){
                             data.priority = priority - 1
                         }
                         return Transaction.success(data)
@@ -85,7 +85,7 @@ class FirebaseProvider private constructor() {
                             data.priority = 0
                             priority = 0
                         }
-                        if (priority is Int){
+                        if (priority is Double){
                             data.priority = priority + 1
                         }
 

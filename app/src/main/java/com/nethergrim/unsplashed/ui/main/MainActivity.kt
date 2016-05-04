@@ -105,6 +105,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         adapter?.notifyDataSetChanged()
         progressBar?.postDelayed({ progressBar?.hide() }, 2000)
         errorView?.hide()
+        recycler?.scrollToPosition(data.size - 1)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
