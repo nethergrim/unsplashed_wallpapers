@@ -87,7 +87,19 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
 
                 imageButton {
                     imageResource = R.drawable.ic_share_black_24px
-                    onClick { presenter.share(this@imageButton.context) }
+                    onClick {
+                        RxPermissions.getInstance(this@DetailsActivity)
+                                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                .subscribe({
+                                    val granted = it
+                                    if (granted) {
+                                        presenter.share(this@imageButton.context)
+                                    } else {
+                                        toast("Impossible to download image without a permission. Please give storage access permission.")
+                                    }
+                                })
+
+                    }
                 }.lparams { weight = 1.0f; width = 0; height = -1 }
 
                 imageButton {
