@@ -100,7 +100,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
     }
 
 
-    override fun setData(data: LinkedList<Wallpaper>) {
+    override fun setData(data: List<Wallpaper>) {
         adapter?.data = data
         adapter?.notifyDataSetChanged()
         progressBar?.postDelayed({ progressBar?.hide() }, 2000)

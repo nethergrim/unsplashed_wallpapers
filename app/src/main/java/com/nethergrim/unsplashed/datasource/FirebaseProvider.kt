@@ -1,5 +1,6 @@
 package com.nethergrim.unsplashed.datasource
 
+import android.util.Log
 import com.firebase.client.*
 import com.nethergrim.unsplashed.utils.toListOfWallpapers
 import com.soikonomakis.rxfirebase.RxFirebase
@@ -13,10 +14,6 @@ import java.util.*
  */
 class FirebaseProvider private constructor() {
 
-    init {
-
-    }
-
     private object Holder {
         val INSTANCE = FirebaseProvider()
     }
@@ -29,22 +26,19 @@ class FirebaseProvider private constructor() {
     private val firebase: Firebase by lazy { Firebase(firebaseUrl) }
 
     private val data: HashMap<String, Wallpaper> = HashMap(9000)
-    private val dataSet: Set<Wallpaper> = Collections.synchronizedSet<Wallpaper>(HashSet<Wallpaper>())
+
     private val scheduler = Schedulers.newThread()
 
-    fun getWallpapers(): Observable<LinkedList<Wallpaper>> {
-
-        val full = RxFirebase.getInstance()
-                .observeValueEvent(firebase.orderByChild("reversedRating"))
-        val result = full
+    fun getWallpapers(): Observable<List<Wallpaper>> {
+        val result = RxFirebase.getInstance().observeValueEvent(Firebase(firebaseUrl).orderByPriority().limitToFirst(100)).first()
+                .mergeWith(RxFirebase.getInstance().observeValueEvent(Firebase(firebaseUrl).orderByPriority()))
                 .subscribeOn(scheduler)
-                .observeOn(scheduler)
+                .onBackpressureBuffer()
                 .map({ it.toListOfWallpapers() })
                 .doOnNext {
-                    it.forEach { data.put(it.id ?: "", it); dataSet.plus(it) }
+                    Log.d("firebase","Got data list of size: ${it.size}")
+                    it.forEach { data.put(it.id ?: "", it) }
                 }
-                .map { LinkedList<Wallpaper>(it) }
-                .doOnNext { Collections.sort(it) }
         return result
     }
 
@@ -54,7 +48,6 @@ class FirebaseProvider private constructor() {
 
     fun incrementRating(id: String) {
         firebase.child(id)
-                .child("rating")
                 .runTransaction(object : Transaction.Handler {
                     override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
                     }
@@ -63,31 +56,13 @@ class FirebaseProvider private constructor() {
                         if (data == null) {
                             return Transaction.abort()
                         }
-                        if (data.value == null) {
-                            data.value = 1
-                        } else {
-                            var rating = data.getValue(Int::class.java)
-                            data.value = ++rating
+                        var priority = data.priority
+                        if (priority == null){
+                            data.priority = 0
+                            priority = 0
                         }
-                        return Transaction.success(data)
-                    }
-                })
-
-        firebase.child(id)
-                .child("reversedRating")
-                .runTransaction(object : Transaction.Handler {
-                    override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
-                    }
-
-                    override fun doTransaction(data: MutableData?): Transaction.Result? {
-                        if (data == null) {
-                            return Transaction.abort()
-                        }
-                        if (data.value == null) {
-                            data.value = -1
-                        } else {
-                            var rating = data.getValue(Int::class.java)
-                            data.value = --rating
+                        if (priority is Long){
+                            data.priority = priority - 1
                         }
                         return Transaction.success(data)
                     }
@@ -96,7 +71,6 @@ class FirebaseProvider private constructor() {
 
     fun decrementRating(id: String) {
         firebase.child(id)
-                .child("rating")
                 .runTransaction(object : Transaction.Handler {
                     override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
                     }
@@ -105,38 +79,22 @@ class FirebaseProvider private constructor() {
                         if (data == null) {
                             return Transaction.abort()
                         }
-                        if (data.value == null) {
-                            data.value = -1
-                        } else {
-                            var rating = data.getValue(Int::class.java)
-                            data.value = --rating
+
+                        var priority = data.priority
+                        if (priority == null){
+                            data.priority = 0
+                            priority = 0
                         }
+                        if (priority is Int){
+                            data.priority = priority + 1
+                        }
+
                         return Transaction.success(data)
                     }
                 })
 
-        firebase.child(id)
-                .child("reversedRating")
-                .runTransaction(object : Transaction.Handler {
-                    override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
-                    }
 
-                    override fun doTransaction(data: MutableData?): Transaction.Result? {
-                        if (data == null) {
-                            return Transaction.abort()
-                        }
-                        if (data.value == null) {
-                            data.value = 1
-                        } else {
-                            var rating = data.getValue(Int::class.java)
-                            data.value = ++rating
-                        }
-                        return Transaction.success(data)
-                    }
-                })
     }
 
-
-    val TAG = "FirebaseProvider"
 
 }
