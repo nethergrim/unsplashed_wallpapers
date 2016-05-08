@@ -28,7 +28,8 @@ fun AppCompatActivity.dp2px(dp: Int): Float {
 
 
 fun DataSnapshot.toListOfWallpapers(): List<Wallpaper> {
-    val result = LinkedList<Wallpaper>()
+    val child = children
+    val result = ArrayList<Wallpaper>(child.count())
     for (snapshot: DataSnapshot in this.children) {
         val wallpaper = snapshot.getValue(Wallpaper::class.java)
         result.add(wallpaper)
