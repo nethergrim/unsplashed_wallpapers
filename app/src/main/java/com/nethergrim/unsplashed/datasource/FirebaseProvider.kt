@@ -7,6 +7,7 @@ import com.soikonomakis.rxfirebase.RxFirebase
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.util.*
+import java.util.concurrent.Executors
 
 /**
  * @author Andrey Drobyazko (c2q9450@gmail.com).
@@ -36,7 +37,7 @@ class FirebaseProvider private constructor() {
                 .onBackpressureBuffer()
                 .map({ it.toListOfWallpapers() })
                 .doOnNext {
-                    Log.d("firebase","Got data list of size: ${it.size}")
+                    Log.d("firebase", "Got data list of size: ${it.size}")
                     it.forEach { data.put(it.id ?: "", it) }
                 }
         return result
@@ -47,54 +48,57 @@ class FirebaseProvider private constructor() {
     }
 
     fun incrementRating(id: String) {
-        firebase.child(id)
-                .runTransaction(object : Transaction.Handler {
-                    override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
-                    }
+        Executors.newSingleThreadExecutor().submit {
+            firebase.child(id)
+                    .runTransaction(object : Transaction.Handler {
+                        override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
+                        }
 
-                    override fun doTransaction(data: MutableData?): Transaction.Result? {
-                        if (data == null) {
-                            return Transaction.abort()
+                        override fun doTransaction(data: MutableData?): Transaction.Result? {
+                            if (data == null) {
+                                return Transaction.abort()
+                            }
+                            var priority = data.priority
+                            if (priority == null) {
+                                data.priority = 0
+                                priority = 0
+                            }
+                            if (priority is Double) {
+                                data.priority = priority - 1
+                            }
+                            return Transaction.success(data)
                         }
-                        var priority = data.priority
-                        if (priority == null){
-                            data.priority = 0
-                            priority = 0
-                        }
-                        if (priority is Double){
-                            data.priority = priority - 1
-                        }
-                        return Transaction.success(data)
-                    }
-                })
+                    })
+        }
     }
 
     fun decrementRating(id: String) {
-        firebase.child(id)
-                .runTransaction(object : Transaction.Handler {
-                    override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
-                    }
-
-                    override fun doTransaction(data: MutableData?): Transaction.Result? {
-                        if (data == null) {
-                            return Transaction.abort()
+        Executors.newSingleThreadExecutor().submit {
+            firebase.child(id)
+                    .runTransaction(object : Transaction.Handler {
+                        override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
                         }
 
-                        var priority = data.priority
-                        if (priority == null){
-                            data.priority = 0
-                            priority = 0
-                        }
-                        if (priority is Double){
-                            data.priority = priority + 1
-                        }
+                        override fun doTransaction(data: MutableData?): Transaction.Result? {
+                            if (data == null) {
+                                return Transaction.abort()
+                            }
 
-                        return Transaction.success(data)
-                    }
-                })
+                            var priority = data.priority
+                            if (priority == null) {
+                                data.priority = 0
+                                priority = 0
+                            }
+                            if (priority is Double) {
+                                data.priority = priority + 1
+                            }
+
+                            return Transaction.success(data)
+                        }
+                    })
+        }
 
 
     }
-
 
 }
