@@ -4,10 +4,12 @@ package com.nethergrim.unsplashed.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Environment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.facebook.drawee.view.SimpleDraweeView
 import com.firebase.client.DataSnapshot
 import com.nethergrim.unsplashed.App
 import com.nethergrim.unsplashed.datasource.Wallpaper
@@ -35,6 +37,11 @@ fun DataSnapshot.toListOfWallpapers(): List<Wallpaper> {
         result.add(wallpaper)
     }
     return result
+}
+
+fun SimpleDraweeView.getBitmap(): Bitmap {
+    val drawable =  this.hierarchy.topLevelDrawable as BitmapDrawable
+    return drawable.bitmap
 }
 
 fun View.hide() {

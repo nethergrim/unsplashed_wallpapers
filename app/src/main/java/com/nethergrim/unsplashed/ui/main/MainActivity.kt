@@ -73,8 +73,10 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
                 if (adapter == null) {
                     return
                 }
-                val wallpaper = adapter!!.data[position]
-                presenter.openDetailsScreen(wallpaper, this@MainActivity)
+                if (adapter!!.data.size > position){
+                    val wallpaper = adapter!!.data[position]
+                    presenter.openDetailsScreen(wallpaper, this@MainActivity)
+                }
             }
 
             override fun onItemLongPress(childView: View, position: Int) {
