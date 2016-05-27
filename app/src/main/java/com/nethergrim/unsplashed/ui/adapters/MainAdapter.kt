@@ -2,10 +2,11 @@ package com.nethergrim.unsplashed.ui.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import com.facebook.drawee.view.SimpleDraweeView
+import android.widget.ImageView
 import com.nethergrim.unsplashed.datasource.Wallpaper
-import com.nethergrim.unsplashed.datasource.previewUri
+import com.nethergrim.unsplashed.datasource.previewUrl
 import com.nethergrim.unsplashed.ui.adapters.viewHolders.MainVh
+import com.nethergrim.unsplashed.utils.PicassoImageLoader
 
 /**
  * @author Andrey Drobyazko (c2q9450@gmail.com).
@@ -17,8 +18,8 @@ class MainAdapter(var data: List<Wallpaper>) : RecyclerView.Adapter<MainVh>() {
     override fun onBindViewHolder(p0: MainVh?, p1: Int) {
         val wallpaper = data.get(p1)
         if (p0?.imageView != null) {
-            val imageView: SimpleDraweeView = p0?.imageView as SimpleDraweeView
-            imageView.setImageURI(wallpaper.previewUri(), wallpaper)
+            val imageView: ImageView = p0?.imageView as ImageView
+            PicassoImageLoader.instance.loadImage(wallpaper.previewUrl(), imageView, 200)
         }
     }
 

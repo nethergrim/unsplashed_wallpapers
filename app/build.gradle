@@ -61,7 +61,7 @@ dependencies {
     compile 'com.firebase:firebase-client-android:2.5.2'
     compile 'com.soikonomakis:rxfirebase:1.0.0'
 
-    compile 'com.facebook.fresco:fresco:0.9.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.4.1'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
@@ -71,6 +71,7 @@ dependencies {
     }
 
     compile "com.google.android.gms:play-services-gcm:8.3.0"
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
 }
 buildscript {
     ext.kotlin_version = '1.0.1-2'
