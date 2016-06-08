@@ -32,7 +32,7 @@ class FirebaseProvider private constructor() {
 
     fun getWallpapers(): Observable<List<Wallpaper>> {
         val result =
-                RxFirebase.getInstance().observeValueEvent(Firebase(firebaseUrl).orderByPriority().limitToFirst(5000))
+                RxFirebase.getInstance().observeValueEvent(Firebase(firebaseUrl).orderByPriority())
                 .subscribeOn(scheduler)
                 .onBackpressureBuffer()
                 .map({ it.toListOfWallpapers() })

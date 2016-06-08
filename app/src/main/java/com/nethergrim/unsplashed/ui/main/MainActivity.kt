@@ -125,7 +125,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         adapter?.notifyDataSetChanged()
         progressBar?.postDelayed({ progressBar?.hide() }, 2000)
         errorView?.hide()
-        blurView!!.animate().setStartDelay(700).alpha(0f).setDuration(500).setListener(object: Animator.AnimatorListener {
+        blurView!!.animate().setStartDelay(1000).alpha(0f).setDuration(500).setListener(object: Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
 
             }
