@@ -6,10 +6,6 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
 import com.firebase.client.Config
 import com.firebase.client.Firebase
-import com.google.android.gms.gcm.GcmNetworkManager
-import com.google.android.gms.gcm.OneoffTask
-import com.google.android.gms.gcm.PeriodicTask
-import com.nethergrim.unsplashed.datasource.SyncService
 import com.nethergrim.unsplashed.utils.PicassoImageLoader
 import io.fabric.sdk.android.Fabric
 
@@ -35,19 +31,7 @@ open class App: Application() {
         config.isPersistenceEnabled = true
         Firebase.setDefaultConfig(config)
 
-        val task = PeriodicTask.Builder()
-                .setRequiredNetwork(OneoffTask.NETWORK_STATE_ANY)
-                .setPersisted(true)
-                .setRequiresCharging(true)
-                .setService(SyncService::class.java)
-                .setTag("sync")
-                .setPeriod(3600 * 12)
-                .setFlex(3600 * 6)
-            .build()
 
-
-
-        GcmNetworkManager.getInstance(this).schedule(task)
     }
 
     override fun onTrimMemory(level: Int) {
