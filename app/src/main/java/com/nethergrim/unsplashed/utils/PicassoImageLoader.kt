@@ -20,7 +20,7 @@ class PicassoImageLoader {
     }
 
     fun loadImage(url: String, imageView: ImageView){
-        Picasso.with(App.instance).load(url).placeholder(R.drawable.ic_image_black_24px).into(imageView)
+        Picasso.with(App.instance).load(url).placeholder(R.drawable.thumbnail).into(imageView)
     }
 
     fun loadImage(url: String, imageView: ImageView, height: Int, width: Int){
