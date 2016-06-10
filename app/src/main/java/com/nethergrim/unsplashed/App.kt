@@ -7,6 +7,7 @@ import com.crashlytics.android.answers.Answers
 import com.firebase.client.Config
 import com.firebase.client.Firebase
 import com.nethergrim.unsplashed.utils.PicassoImageLoader
+import com.yandex.metrica.YandexMetrica
 import io.fabric.sdk.android.Fabric
 
 /**
@@ -30,6 +31,9 @@ open class App: Application() {
         val config = Config()
         config.isPersistenceEnabled = true
         Firebase.setDefaultConfig(config)
+        YandexMetrica.activate(getApplicationContext(), "61dfcbea-2f59-434b-bfbe-9090107fb4f9");
+        // Отслеживание активности пользователей
+        YandexMetrica.enableActivityAutoTracking(this);
 
 
     }

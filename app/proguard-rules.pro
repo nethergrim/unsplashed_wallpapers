@@ -78,3 +78,6 @@
 -dontwarn javax.annotation.**
 -dontwarn com.android.volley.toolbox.**
 -dontwarn com.squareup.okhttp.**
+
+-keep class com.yandex.** {*;}
+-dontwarn com.yandex.**

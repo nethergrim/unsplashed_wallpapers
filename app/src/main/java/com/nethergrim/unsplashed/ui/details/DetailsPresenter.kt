@@ -13,6 +13,7 @@ import com.nethergrim.unsplashed.datasource.fullSizeUrl
 import com.nethergrim.unsplashed.utils.getInputStreamFromUrl
 import com.nethergrim.unsplashed.utils.saveBitmapToCache
 import com.nethergrim.unsplashed.utils.saveBitmapToDownloads
+import com.yandex.metrica.YandexMetrica
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -56,7 +57,7 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
 
 
         }
-
+        YandexMetrica.reportEvent("sharing wallpaper ", "$id")
         Observable.just(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -67,9 +68,9 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
                     if (isViewAttached) {
                         view?.hideBlockingProgress()
                         val shareIntent = Intent();
-                        shareIntent.setAction(Intent.ACTION_SEND);
+                        shareIntent.action = Intent.ACTION_SEND;
                         shareIntent.putExtra(Intent.EXTRA_STREAM, it);
-                        shareIntent.setType("image/jpeg");
+                        shareIntent.type = "image/jpeg";
                         context.startActivity(Intent.createChooser(shareIntent, "Share to:"))
                     }
                 }, {
@@ -85,6 +86,7 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
         if (isViewAttached) {
             view?.showBlockingProgress()
         }
+        YandexMetrica.reportEvent("downloading wallpaper ", "$id")
         Observable.just(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -109,6 +111,7 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
         if (isViewAttached) {
             view?.showBlockingProgress()
         }
+        YandexMetrica.reportEvent("setting wallpaper ", "$id")
         Observable.just(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

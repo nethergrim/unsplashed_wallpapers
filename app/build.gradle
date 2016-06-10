@@ -71,6 +71,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+    compile 'com.yandex.android:mobmetricalib:2.41'
 }
 buildscript {
     ext.kotlin_version = '1.0.1-2'

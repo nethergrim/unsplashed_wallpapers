@@ -3,6 +3,7 @@ package com.nethergrim.unsplashed.datasource
 import com.firebase.client.*
 import com.nethergrim.unsplashed.utils.toListOfWallpapers
 import com.soikonomakis.rxfirebase.RxFirebase
+import com.yandex.metrica.YandexMetrica
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.util.*
@@ -39,6 +40,7 @@ class FirebaseProvider private constructor() {
     }
 
     fun incrementRating(id: String) {
+        YandexMetrica.reportEvent("upwoting wallpaper ", "$id")
         Executors.newSingleThreadExecutor().submit {
             firebase.child(id)
                     .runTransaction(object : Transaction.Handler {
@@ -64,6 +66,7 @@ class FirebaseProvider private constructor() {
     }
 
     fun decrementRating(id: String) {
+        YandexMetrica.reportEvent("downwoting wallpaper ", "$id")
         Executors.newSingleThreadExecutor().submit {
             firebase.child(id)
                     .runTransaction(object : Transaction.Handler {
