@@ -1,7 +1,6 @@
 package com.nethergrim.unsplashed.ui.main
 
 
-import android.animation.Animator
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
@@ -23,8 +22,6 @@ import com.nethergrim.unsplashed.utils.hide
 import com.nethergrim.unsplashed.utils.show
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration
 import com.yqritc.recyclerviewflexibledivider.VerticalDividerItemDecoration
-import eightbitlab.com.blurview.BlurView
-import eightbitlab.com.blurview.RenderScriptBlur
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.progressBar
@@ -41,7 +38,8 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
     var layoutManager: GridLayoutManager? = null
     var spanCountDelta: Int = 0
     var adapter: MainAdapter? = null
-    var blurView: BlurView? = null
+    var horizontalDecoration: RecyclerView.ItemDecoration? = null
+    var removedHorizontalDecoration = false
 
     private fun onRetryClicked() {
         presenter.startLoadingData()
@@ -69,7 +67,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
             }.lparams { gravity = Gravity.CENTER }
 
         }
-        recycler?.layoutParams = FrameLayout.LayoutParams(-1,-1)
+        recycler?.layoutParams = FrameLayout.LayoutParams(-1, -1)
         rootLayout?.addView(recycler, 1)
         recycler?.setHasFixedSize(true)
         recycler?.addOnItemTouchListener(RecyclerItemClickListener(this, object : RecyclerItemClickListener.OnItemClickListener {
@@ -77,7 +75,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
                 if (adapter == null) {
                     return
                 }
-                if (adapter!!.data.size > position){
+                if (adapter!!.data.size > position) {
                     val wallpaper = adapter!!.data[position]
                     presenter.openDetailsScreen(wallpaper, this@MainActivity)
                 }
@@ -88,15 +86,26 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         }))
         layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.main_screen_span_count))
         recycler?.layoutManager = layoutManager
+
+
+
+
+
+        horizontalDecoration = VerticalDividerItemDecoration.Builder(this)
+                .color(Color.BLACK)
+                .size(dp2px(2).toInt())
+                .build()
+        if (layoutManager!!.spanCount > 1) {
+            recycler?.addItemDecoration(horizontalDecoration)
+        }
+
         recycler?.addItemDecoration(HorizontalDividerItemDecoration.Builder(this)
                 .color(Color.BLACK)
                 .size(dp2px(2).toInt())
                 .build())
 
-        recycler?.addItemDecoration(VerticalDividerItemDecoration.Builder(this)
-                .color(Color.BLACK)
-                .size(dp2px(2).toInt())
-                .build())
+
+
         presenter.startLoadingData()
         adapter = MainAdapter(LinkedList())
         recycler?.adapter = adapter
@@ -105,18 +114,6 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         rootLayout?.fitsSystemWindows = false
 
 
-        val radius = 16f;
-
-        val decorView = getWindow().getDecorView();
-        val windowBackground = decorView.getBackground();
-        blurView = BlurView(this)
-        val blurViewParams = FrameLayout.LayoutParams(-1 , -1)
-        rootLayout?.addView(blurView, blurViewParams)
-
-        blurView?.setupWith(rootLayout)
-                ?.windowBackground(windowBackground)
-                ?.blurAlgorithm(RenderScriptBlur(this, true)) //Preferable algorithm, needs RenderScript support mode enabled
-        ?.blurRadius(radius);
     }
 
 
@@ -125,23 +122,6 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         adapter?.notifyDataSetChanged()
         progressBar?.postDelayed({ progressBar?.hide() }, 2000)
         errorView?.hide()
-        blurView!!.animate().setStartDelay(1000).alpha(0f).setDuration(500).setListener(object: Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {
-
-            }
-
-            override fun onAnimationEnd(animation: Animator?) {
-                blurView!!.visibility = View.GONE
-            }
-
-            override fun onAnimationCancel(animation: Animator?) {
-
-            }
-
-            override fun onAnimationStart(animation: Animator?) {
-
-            }
-        }).start()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -153,9 +133,17 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
             // add one more span count
             spanCountDelta++
             layoutManager?.spanCount = layoutManager!!.spanCount + spanCountDelta
+            if (removedHorizontalDecoration && layoutManager!!.spanCount > 1) {
+                removedHorizontalDecoration = false
+                recycler?.addItemDecoration(horizontalDecoration)
+            }
         } else if (spanCountDelta > 0 && newConfig?.orientation == Configuration.ORIENTATION_PORTRAIT) {
             layoutManager?.spanCount = layoutManager!!.spanCount - spanCountDelta
             spanCountDelta--
+            if (layoutManager?.spanCount == 1) {
+                removedHorizontalDecoration = true
+                recycler?.removeItemDecoration(horizontalDecoration)
+            }
         }
     }
 

@@ -2,7 +2,6 @@ package com.nethergrim.unsplashed.utils;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,72 +18,43 @@ import java.net.URLConnection;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class FileUtils {
 
+    public static final String GET = "GET";
+    public static final String JPEG = ".jpg";
+    public static final String IMAGES = "images";
 
-    public static Uri downloadImagesToCache(String downloadUrl, Context context, String name) {
-        try {
-            File directory = context.getCacheDir();
-
-            File myDir = new File(directory, "images");
-
-                /*  if specified not exist create new */
-            if (!myDir.exists()) {
-                myDir.mkdir();
-            }
-
-                /* checks the file and if it already exist delete */
-            String fname = name + ".jpg";
-            File file = new File(myDir, fname);
-            if (file.exists()) {
-                return Uri.fromFile(file);
-            }
-
-            return downloadImage(downloadUrl, file);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static Uri downloadImagesToCache(String downloadUrl, Context context, String name) throws IOException {
+        File directory = context.getCacheDir();
+        File myDir = new File(directory, IMAGES);
+        if (!myDir.exists()) {
+            myDir.mkdir();
         }
-        return null;
+        String fname = name + JPEG;
+        File file = new File(myDir, fname);
+        if (file.exists()) {
+            return Uri.fromFile(file);
+        }
+        return downloadImage(downloadUrl, file);
     }
 
-    public static Uri downloadImage(String downloadUrl, File file) {
-        try {
-            URL url = new URL(downloadUrl);
-            if (file.exists() && file.isFile()) {
-                return Uri.fromFile(file);
-            }
-
-
-                /* Open a connection */
-            URLConnection ucon = url.openConnection();
-            InputStream inputStream;
-            HttpURLConnection httpConn = (HttpURLConnection) ucon;
-            httpConn.setRequestMethod("GET");
-            httpConn.connect();
-            inputStream = httpConn.getInputStream();
-                /*if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK)
-                {
-                    inputStream = httpConn.getInputStream();
-                }*/
-
-            FileOutputStream fos = new FileOutputStream(file);
-            int totalSize = httpConn.getContentLength();
-            int downloadedSize = 0;
-            byte[] buffer = new byte[1024];
-            int bufferLength = 0;
-            while ((bufferLength = inputStream.read(buffer)) > 0) {
-                fos.write(buffer, 0, bufferLength);
-                downloadedSize += bufferLength;
-                Log.i("Progress:", "downloadedSize:" + downloadedSize + "totalSize:" + totalSize);
-            }
-
-            fos.close();
-            Log.d("test", "Image Saved in sdcard..");
+    public static Uri downloadImage(String downloadUrl, File file) throws IOException {
+        URL url = new URL(downloadUrl);
+        if (file.exists() && file.isFile()) {
             return Uri.fromFile(file);
-        } catch (IOException io) {
-            io.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return null;
+        URLConnection connection = url.openConnection();
+        InputStream inputStream;
+        HttpURLConnection httpConn = (HttpURLConnection) connection;
+        httpConn.setRequestMethod(GET);
+        httpConn.connect();
+        inputStream = httpConn.getInputStream();
+        FileOutputStream fos = new FileOutputStream(file);
+        byte[] buffer = new byte[2048];
+        int bufferLength;
+        while ((bufferLength = inputStream.read(buffer)) > 0) {
+            fos.write(buffer, 0, bufferLength);
+        }
+        fos.close();
+        return Uri.fromFile(file);
     }
 
 }

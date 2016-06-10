@@ -38,5 +38,6 @@ open class App: Application() {
         super.onTrimMemory(level)
         Log.e("APP", "Trim memory called with level: " + level)
         PicassoImageLoader.instance.clearMemoryCache()
+        System.gc()
     }
 }
