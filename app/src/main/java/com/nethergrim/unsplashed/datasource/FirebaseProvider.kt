@@ -1,6 +1,5 @@
 package com.nethergrim.unsplashed.datasource
 
-import android.util.Log
 import com.firebase.client.*
 import com.nethergrim.unsplashed.utils.toListOfWallpapers
 import com.soikonomakis.rxfirebase.RxFirebase
@@ -26,7 +25,7 @@ class FirebaseProvider private constructor() {
     private val firebaseUrl: String by lazy { "https://unsplash-wallpapers.firebaseio.com/wallpapers" }
     private val firebase: Firebase by lazy { Firebase(firebaseUrl) }
 
-    private val data: HashMap<String, Wallpaper> = HashMap(9000)
+    public val data: HashMap<String, Wallpaper> = HashMap(9000)
 
     private val scheduler = Schedulers.newThread()
 
@@ -36,10 +35,6 @@ class FirebaseProvider private constructor() {
                 .subscribeOn(scheduler)
                 .onBackpressureBuffer()
                 .map({ it.toListOfWallpapers() })
-                .doOnNext {
-                    Log.d("firebase", "Got data list of size: ${it.size}")
-                    it.forEach { data.put(it.id ?: "", it) }
-                }
         return result
     }
 

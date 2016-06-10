@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.firebase.client.DataSnapshot
 import com.nethergrim.unsplashed.App
+import com.nethergrim.unsplashed.datasource.FirebaseProvider
 import com.nethergrim.unsplashed.datasource.Wallpaper
 import java.io.File
 import java.io.FileOutputStream
@@ -29,14 +30,18 @@ fun AppCompatActivity.dp2px(dp: Int): Float {
 
 fun DataSnapshot.toListOfWallpapers(): List<Wallpaper> {
     val child = children
-    val result = ArrayList<Wallpaper>(child.count())
+    val result = ArrayList<Wallpaper>(child.count() + 20)
     for (snapshot: DataSnapshot in this.children) {
-        val wallpaper = snapshot.getValue(Wallpaper::class.java)
-        result.add(wallpaper)
+        result.add(snapshot.toWallpaper())
     }
     return result
 }
 
+fun DataSnapshot.toWallpaper(): Wallpaper {
+    val wallpaper = this.getValue(Wallpaper::class.java)
+    FirebaseProvider.instance.data.put(wallpaper.id!!, wallpaper)
+    return wallpaper
+}
 
 
 fun View.hide() {

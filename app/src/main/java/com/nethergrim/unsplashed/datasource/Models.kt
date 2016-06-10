@@ -42,8 +42,8 @@ open class Wallpaper(): Comparable<Wallpaper> {
 }
 
 val unsplashImageUrl: String = "https://images.unsplash.com/"
-val previewQualifier = "?w=600"
-val fullQualifier = "?w=4000"
+val previewQualifier = "?w=500"
+val fullQualifier = "?w=5000"
 
 fun Wallpaper.previewUrl(): String {
     return unsplashImageUrl + id + previewQualifier
