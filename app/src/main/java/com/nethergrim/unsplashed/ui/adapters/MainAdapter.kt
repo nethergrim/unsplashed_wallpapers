@@ -23,9 +23,8 @@ class MainAdapter(var data: List<Wallpaper>) : RecyclerView.Adapter<MainVh>() {
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             PicassoImageLoader.instance.loadImage(wallpaper.previewUrl(), imageView)
         }
-        if (data.size + 5 > p1){
-            val next = data.get(p1+3)
-            PicassoImageLoader.instance.precacheImage(next.previewUrl())
+        if (data.size > p1 + 3){
+            PicassoImageLoader.instance.precacheImage(data[p1+3].previewUrl())
         }
     }
 
