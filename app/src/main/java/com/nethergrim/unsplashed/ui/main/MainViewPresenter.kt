@@ -17,13 +17,21 @@ class MainViewPresenter : MvpBasePresenter<MainView>() {
     val TAG = "MainViewPresenter"
 
     fun startLoadingData() {
+        loadDataAndDisplay(100)
+    }
+
+    fun loadMoreData(limit: Int = 9000){
+        loadDataAndDisplay(limit)
+    }
+
+    private fun loadDataAndDisplay(limit: Int){
         if (!isViewAttached) {
             return
         }
         view?.showLoadingView()
 
         FirebaseProvider.instance
-                .getWallpapers()
+                .getWallpapers(limit)
                 .observeOn(AndroidSchedulers.mainThread())
                 .takeUntil { !isViewAttached }
                 .subscribe({

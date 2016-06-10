@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -105,7 +106,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
                 .build())
 
 
-
+        Log.d("MainActivity", "starting loading data")
         presenter.startLoadingData()
         adapter = MainAdapter(LinkedList())
         recycler?.adapter = adapter
@@ -118,10 +119,12 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
 
 
     override fun setData(data: List<Wallpaper>) {
+        Log.d("MainActivity", "loaded wallpapers: " + data.size)
         adapter?.data = data
         adapter?.notifyDataSetChanged()
         progressBar?.postDelayed({ progressBar?.hide() }, 2000)
         errorView?.hide()
+        presenter.loadMoreData(adapter!!.itemCount + 300)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {

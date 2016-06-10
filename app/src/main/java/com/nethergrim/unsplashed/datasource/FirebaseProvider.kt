@@ -25,17 +25,12 @@ class FirebaseProvider private constructor() {
     private val firebaseUrl: String by lazy { "https://unsplash-wallpapers.firebaseio.com/wallpapers" }
     private val firebase: Firebase by lazy { Firebase(firebaseUrl) }
 
-    public val data: HashMap<String, Wallpaper> = HashMap(9000)
+    val data: HashMap<String, Wallpaper> = HashMap(9000)
 
     private val scheduler = Schedulers.newThread()
 
-    fun getWallpapers(): Observable<List<Wallpaper>> {
-        val result =
-                RxFirebase.getInstance().observeValueEvent(Firebase(firebaseUrl).orderByPriority().limitToFirst(1))
-                .subscribeOn(scheduler)
-                .onBackpressureBuffer()
-                .map({ it.toListOfWallpapers() })
-        return result
+    fun getWallpapers(limit: Int = 10000): Observable<List<Wallpaper>> {
+        return RxFirebase.getInstance().observeValueEvent(Firebase(firebaseUrl).orderByPriority().limitToFirst(limit)).subscribeOn(scheduler).map({ it.toListOfWallpapers() })
     }
 
     fun getWallpaperById(id: String): Wallpaper? {
