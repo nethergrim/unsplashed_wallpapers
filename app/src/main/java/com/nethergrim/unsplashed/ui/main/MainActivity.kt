@@ -124,7 +124,9 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         adapter?.notifyDataSetChanged()
         progressBar?.postDelayed({ progressBar?.hide() }, 2000)
         errorView?.hide()
-        presenter.loadMoreData(adapter!!.itemCount + 300)
+        if (adapter!!.itemCount < 9000){
+            presenter.loadMoreData(adapter!!.itemCount + 300)
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
