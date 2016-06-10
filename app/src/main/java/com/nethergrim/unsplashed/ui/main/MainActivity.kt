@@ -41,6 +41,8 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
     var adapter: MainAdapter? = null
     var horizontalDecoration: RecyclerView.ItemDecoration? = null
     var removedHorizontalDecoration = false
+    var loadingData = false
+    var lastCount = -1
 
     private fun onRetryClicked() {
         presenter.startLoadingData()
@@ -120,13 +122,18 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
 
     override fun setData(data: List<Wallpaper>) {
         Log.d("MainActivity", "loaded wallpapers: " + data.size)
+        if (data.size - lastCount > 250) {
+            loadingData = false
+        }
         adapter?.data = data
         adapter?.notifyDataSetChanged()
         progressBar?.postDelayed({ progressBar?.hide() }, 2000)
         errorView?.hide()
-        if (adapter!!.itemCount < 6000){
+        if (adapter!!.itemCount < 6000 && !loadingData){
             presenter.loadMoreData(adapter!!.itemCount + 300)
+            loadingData = true
         }
+        lastCount = data.size
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
