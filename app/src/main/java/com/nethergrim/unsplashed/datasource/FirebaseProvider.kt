@@ -1,6 +1,5 @@
 package com.nethergrim.unsplashed.datasource
 
-import android.util.Log
 import com.firebase.client.*
 import com.nethergrim.unsplashed.utils.toListOfWallpapers
 import com.soikonomakis.rxfirebase.RxFirebase
@@ -32,12 +31,11 @@ class FirebaseProvider private constructor() {
 
 
     fun getWallpapers(limit: Int = 10000): Observable<List<Wallpaper>> {
-        Log.d("FirebaseProvider", "Loading $limit wallpapers")
-        return RxFirebase.getInstance().observeValueEvent(Firebase(firebaseUrl).orderByPriority().limitToFirst(limit)).subscribeOn(scheduler).map({ it.toListOfWallpapers() })
+        return RxFirebase.getInstance().observeValueEvent(Firebase(firebaseUrl).orderByPriority().limitToFirst(limit)).subscribeOn(scheduler).map({ it.toListOfWallpapers() }).first()
     }
 
     fun getWallpaperById(id: String): Wallpaper? {
-        return data.get(id)
+        return data[id]
     }
 
     fun incrementRating(id: String) {
