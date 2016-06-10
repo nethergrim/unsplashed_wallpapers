@@ -48,7 +48,7 @@ public class FileUtils {
         httpConn.connect();
         inputStream = httpConn.getInputStream();
         FileOutputStream fos = new FileOutputStream(file);
-        byte[] buffer = new byte[2048];
+        byte[] buffer = new byte[1024];
         int bufferLength;
         while ((bufferLength = inputStream.read(buffer)) > 0) {
             fos.write(buffer, 0, bufferLength);
