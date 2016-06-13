@@ -32,7 +32,6 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
         if (isViewAttached) {
             view?.showLoadingView()
         }
-
         Observable.just(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -54,15 +53,13 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
     fun share(context: Context) {
         if (isViewAttached) {
             view?.showBlockingProgress()
-
-
         }
-        YandexMetrica.reportEvent("sharing wallpaper ", "$id")
         Observable.just(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map({ FirebaseProvider.instance.getWallpaperById(id) ?: Wallpaper() })
                 .map({ saveBitmapToDownloads(it.fullSizeUrl(), it.id!!) })
+                .doOnNext { YandexMetrica.reportEvent("sharing wallpaper ", "$id") }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (isViewAttached) {
@@ -86,12 +83,12 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
         if (isViewAttached) {
             view?.showBlockingProgress()
         }
-        YandexMetrica.reportEvent("downloading wallpaper ", "$id")
         Observable.just(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map({ FirebaseProvider.instance.getWallpaperById(id) ?: Wallpaper() })
                 .map { saveBitmapToDownloads(it.fullSizeUrl(), it.id ?: System.currentTimeMillis().toString()) }
+                .doOnNext { YandexMetrica.reportEvent("downloading wallpaper ", "$id") }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (isViewAttached) {
@@ -111,7 +108,6 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
         if (isViewAttached) {
             view?.showBlockingProgress()
         }
-        YandexMetrica.reportEvent("setting wallpaper ", "$id")
         Observable.just(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -122,6 +118,7 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
                     wallpapersManager.setStream(it)
                     wallpapersManager.setWallpaperOffsetSteps(0.2f, 0f)
                 }
+                .doOnNext { YandexMetrica.reportEvent("setting wallpaper ", "$id") }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (isViewAttached) {

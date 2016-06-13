@@ -1,19 +1,21 @@
 package com.nethergrim.unsplashed.datasource
 
+import android.util.Log
 import com.firebase.client.*
 import com.nethergrim.unsplashed.utils.toListOfWallpapers
 import com.soikonomakis.rxfirebase.RxFirebase
 import com.yandex.metrica.YandexMetrica
 import rx.Observable
+import rx.Observer
 import rx.schedulers.Schedulers
 import java.util.*
-import java.util.concurrent.Executors
 
 /**
  * @author Andrey Drobyazko (c2q9450@gmail.com).
  * All rights reserved.
  */
 class FirebaseProvider private constructor() {
+
 
     private object Holder {
         val INSTANCE = FirebaseProvider()
@@ -40,10 +42,12 @@ class FirebaseProvider private constructor() {
     }
 
     fun incrementRating(id: String) {
-        YandexMetrica.reportEvent("upwoting wallpaper ", "$id")
-        Executors.newSingleThreadExecutor().submit {
-            firebase.child(id)
-                    .runTransaction(object : Transaction.Handler {
+        Observable.just(id)
+                .subscribeOn(Schedulers.io())
+                .map { firebase.child(it) }
+                .doOnNext { YandexMetrica.reportEvent("upwoting wallpaper ", "$id") }
+                .doOnNext {
+                    it.runTransaction(object : Transaction.Handler {
                         override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
                         }
 
@@ -62,14 +66,26 @@ class FirebaseProvider private constructor() {
                             return Transaction.success(data)
                         }
                     })
-        }
+                }.subscribe(object : Observer<Firebase?> {
+            override fun onError(e: Throwable?) {
+                Log.e("FirebaseProvider", "upwoting", e);
+            }
+
+            override fun onNext(t: Firebase?) {
+            }
+
+            override fun onCompleted() {
+            }
+        })
     }
 
     fun decrementRating(id: String) {
-        YandexMetrica.reportEvent("downwoting wallpaper ", "$id")
-        Executors.newSingleThreadExecutor().submit {
-            firebase.child(id)
-                    .runTransaction(object : Transaction.Handler {
+        Observable.just(id)
+                .subscribeOn(Schedulers.io())
+                .map { firebase.child(it) }
+                .doOnNext { YandexMetrica.reportEvent("downwoting wallpaper ", "$id") }
+                .doOnNext {
+                    it.runTransaction(object : Transaction.Handler {
                         override fun onComplete(p0: FirebaseError?, p1: Boolean, p2: DataSnapshot?) {
                         }
 
@@ -90,9 +106,17 @@ class FirebaseProvider private constructor() {
                             return Transaction.success(data)
                         }
                     })
-        }
+                }.subscribe(object : Observer<Firebase?> {
+            override fun onError(e: Throwable?) {
+                Log.e("FirebaseProvider", "decrementing", e);
+            }
 
+            override fun onNext(t: Firebase?) {
+            }
 
+            override fun onCompleted() {
+            }
+        })
     }
 
 }
