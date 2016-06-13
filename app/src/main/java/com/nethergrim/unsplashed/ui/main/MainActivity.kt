@@ -78,7 +78,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
                 if (adapter == null) {
                     return
                 }
-                if (adapter!!.data.size > position) {
+                if (adapter!!.data.size > position && position >= 0) {
                     val wallpaper = adapter!!.data[position]
                     presenter.openDetailsScreen(wallpaper, this@MainActivity)
                 }

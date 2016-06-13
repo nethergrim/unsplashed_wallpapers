@@ -3,6 +3,7 @@ package com.nethergrim.unsplashed.ui.details
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Environment
 import android.util.Log
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter
@@ -114,7 +115,8 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
                 .observeOn(Schedulers.io())
                 .map({ FirebaseProvider.instance.getWallpaperById(id) ?: Wallpaper() })
                 .map { it.fullSizeUrl() }
-                .map { Picasso.with(App.instance).load(it).transform(WallpaperTransformation()).get() }
+                .doOnNext { System.gc() }
+                .map { Picasso.with(App.instance).load(it).config(Bitmap.Config.ARGB_8888).transform(WallpaperTransformation()).get() }
                 .doOnNext {
                     val wallpapersManager = WallpaperManager.getInstance(App.instance)
                     wallpapersManager.setBitmap(it)
