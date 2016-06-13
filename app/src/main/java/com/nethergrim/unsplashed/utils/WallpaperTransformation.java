@@ -36,12 +36,7 @@ public class WallpaperTransformation implements Transformation {
 
     public Bitmap getResizedBitmap(Bitmap bm,  int newHeight) {
         float aspectRatio = (float) bm.getWidth() / (float) bm.getHeight();
-        int height = newHeight;
-        int width = Math.round(height / aspectRatio);
-
-
-
-        Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, width, height, false);
-        return yourSelectedImage;
+        int width = Math.round(newHeight * aspectRatio);
+        return Bitmap.createScaledBitmap(bm, width, newHeight, false);
     }
 }

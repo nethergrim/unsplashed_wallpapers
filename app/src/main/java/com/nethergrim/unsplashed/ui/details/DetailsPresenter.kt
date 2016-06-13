@@ -10,9 +10,10 @@ import com.nethergrim.unsplashed.App
 import com.nethergrim.unsplashed.datasource.FirebaseProvider
 import com.nethergrim.unsplashed.datasource.Wallpaper
 import com.nethergrim.unsplashed.datasource.fullSizeUrl
-import com.nethergrim.unsplashed.utils.getInputStreamFromUrl
+import com.nethergrim.unsplashed.utils.WallpaperTransformation
 import com.nethergrim.unsplashed.utils.saveBitmapToCache
 import com.nethergrim.unsplashed.utils.saveBitmapToDownloads
+import com.squareup.picasso.Picasso
 import com.yandex.metrica.YandexMetrica
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -112,11 +113,11 @@ class DetailsPresenter(val id: String) : MvpBasePresenter<DetailsView>() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map({ FirebaseProvider.instance.getWallpaperById(id) ?: Wallpaper() })
-                .map { getInputStreamFromUrl(it.fullSizeUrl()) }
+                .map { it.fullSizeUrl() }
+                .map { Picasso.with(App.instance).load(it).transform(WallpaperTransformation()).get() }
                 .doOnNext {
                     val wallpapersManager = WallpaperManager.getInstance(App.instance)
-                    wallpapersManager.setStream(it)
-                    wallpapersManager.setWallpaperOffsetSteps(0.2f, 0f)
+                    wallpapersManager.setBitmap(it)
                 }
                 .doOnNext { YandexMetrica.reportEvent("setting wallpaper ", "$id") }
                 .observeOn(AndroidSchedulers.mainThread())
