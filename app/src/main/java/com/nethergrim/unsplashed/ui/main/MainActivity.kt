@@ -17,7 +17,6 @@ import com.jaeger.library.StatusBarUtil
 import com.nethergrim.unsplashed.R
 import com.nethergrim.unsplashed.datasource.Wallpaper
 import com.nethergrim.unsplashed.ui.adapters.MainAdapter
-import com.nethergrim.unsplashed.utils.RecyclerItemClickListener
 import com.nethergrim.unsplashed.utils.dp2px
 import com.nethergrim.unsplashed.utils.hide
 import com.nethergrim.unsplashed.utils.show
@@ -29,7 +28,8 @@ import org.jetbrains.anko.progressBar
 import org.jetbrains.anko.textView
 import java.util.*
 
-class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
+class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView, MainAdapter.OnWallpaperClickListener {
+
 
 
     var progressBar: ProgressBar? = null
@@ -73,20 +73,6 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
         recycler?.layoutParams = FrameLayout.LayoutParams(-1, -1)
         rootLayout?.addView(recycler, 1)
         recycler?.setHasFixedSize(true)
-        recycler?.addOnItemTouchListener(RecyclerItemClickListener(this, object : RecyclerItemClickListener.OnItemClickListener {
-            override fun onItemClick(childView: View, position: Int) {
-                if (adapter == null) {
-                    return
-                }
-                if (adapter!!.data.size > position && position >= 0) {
-                    val wallpaper = adapter!!.data[position]
-                    presenter.openDetailsScreen(wallpaper, this@MainActivity)
-                }
-            }
-
-            override fun onItemLongPress(childView: View, position: Int) {
-            }
-        }))
         layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.main_screen_span_count))
         recycler?.layoutManager = layoutManager
 
@@ -110,7 +96,7 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
 
         Log.d("MainActivity", "starting loading data")
         presenter.startLoadingData()
-        adapter = MainAdapter(LinkedList())
+        adapter = MainAdapter(LinkedList(), this)
         recycler?.adapter = adapter
 
         StatusBarUtil.setTransparent(this)
@@ -171,5 +157,9 @@ class MainActivity : MvpActivity<MainView, MainViewPresenter>(), MainView {
 
     override fun createPresenter(): MainViewPresenter {
         return MainViewPresenter()
+    }
+
+    override fun onWallpaperClicked(wallpaper: Wallpaper) {
+        presenter.openDetailsScreen(wallpaper, this)
     }
 }

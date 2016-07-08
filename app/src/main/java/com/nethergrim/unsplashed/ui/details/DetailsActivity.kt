@@ -1,6 +1,7 @@
 package com.nethergrim.unsplashed.ui.details
 
 import android.Manifest
+import android.animation.LayoutTransition
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -150,6 +151,7 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
         imageView = SubsamplingScaleImageView(this)
         imageView.layoutParams = ViewGroup.LayoutParams(-1, -1)
         rootView.addView(imageView, 1)
+        rootView.layoutTransition = LayoutTransition()
     }
 
 
