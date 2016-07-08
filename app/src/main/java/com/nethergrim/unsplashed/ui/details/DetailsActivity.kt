@@ -21,6 +21,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.hannesdorfmann.mosby.mvp.MvpActivity
 import com.jaeger.library.StatusBarUtil
 import com.nethergrim.unsplashed.R
+import com.nethergrim.unsplashed.utils.PullBackLayout
 import com.nethergrim.unsplashed.utils.dp2px
 import com.nethergrim.unsplashed.utils.hide
 import com.nethergrim.unsplashed.utils.show
@@ -28,7 +29,8 @@ import com.tbruyelle.rxpermissions.RxPermissions
 import org.jetbrains.anko.*
 
 @Suppress("NOTHING_TO_INLINE")
-class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsView {
+class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsView, PullBackLayout.Callback {
+
 
 
     lateinit var rootView: FrameLayout
@@ -148,10 +150,17 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
 
             }.lparams { width = -1; height = dp2px(48).toInt(); gravity = Gravity.BOTTOM }
         }
+
+        rootView.layoutTransition = LayoutTransition()
+
+        val pullBackLayout = PullBackLayout(this)
+        pullBackLayout.setCallback(this)
+        rootView.addView(pullBackLayout, 1)
+
         imageView = SubsamplingScaleImageView(this)
         imageView.layoutParams = ViewGroup.LayoutParams(-1, -1)
-        rootView.addView(imageView, 1)
-        rootView.layoutTransition = LayoutTransition()
+        pullBackLayout.addView(imageView, 0)
+
     }
 
 
@@ -203,6 +212,22 @@ class DetailsActivity : MvpActivity<DetailsView, DetailsPresenter>(), DetailsVie
         if (dialog != null) {
             dialog.dismiss()
         }
+    }
+
+    override fun onPullComplete() {
+        supportFinishAfterTransition()
+    }
+
+    override fun onPullStart() {
+//        throw UnsupportedOperationException()
+    }
+
+    override fun onPull(progress: Float) {
+//        throw UnsupportedOperationException()
+    }
+
+    override fun onPullCancel() {
+//        throw UnsupportedOperationException()
     }
 
 }
